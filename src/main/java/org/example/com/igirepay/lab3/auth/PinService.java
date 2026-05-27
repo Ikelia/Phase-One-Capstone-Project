@@ -9,35 +9,16 @@ import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * Handles PIN creation, validation, and change.
- *
- * PINs are stored as SHA-256 hashes – never in plain text.
- *
- * Bonus: locks an account after {@value #MAX_ATTEMPTS} consecutive failures.
- */
 public class PinService {
 
     private static final int MAX_ATTEMPTS = 3;
 
     private final CustomerDAO customerDAO = new CustomerDAO();
 
-    /**
-     * Tracks consecutive failed attempts per customerId.
-     */
     private final Map<String, Integer> failedAttempts = new HashMap<>();
 
-    /**
-     * Locked customer IDs.
-     */
     private final Map<String, Boolean> lockedAccounts = new HashMap<>();
 
-    // ── PIN creation ──────────────────────────────────────────────────────────
-
-    /**
-     * Creates (or resets) a PIN for the given customer.
-     * The PIN is hashed before storage.
-     */
     public void createPin(String customerId, String pin) throws SQLException {
         validatePinFormat(pin);
         String hash = hash(pin);
@@ -45,14 +26,6 @@ public class PinService {
         System.out.println("[PinService] PIN set for customer: " + customerId);
     }
 
-    // ── PIN validation ────────────────────────────────────────────────────────
-
-    /**
-     * Validates a PIN attempt.
-     *
-     * @return true if the PIN matches and the account is not locked
-     * @throws SecurityException if the account is locked
-     */
     public boolean validatePin(String customerId, String pin) throws SQLException {
         if (Boolean.TRUE.equals(lockedAccounts.get(customerId))) {
             throw new SecurityException("Account " + customerId + " is locked due to too many failed PIN attempts.");
@@ -68,7 +41,7 @@ public class PinService {
 
         boolean match = storedHash.equals(hash(pin));
         if (match) {
-            failedAttempts.remove(customerId); // reset on success
+            failedAttempts.remove(customerId);
         } else {
             int attempts = failedAttempts.getOrDefault(customerId, 0) + 1;
             failedAttempts.put(customerId, attempts);
@@ -81,11 +54,6 @@ public class PinService {
         return match;
     }
 
-    // ── PIN change ────────────────────────────────────────────────────────────
-
-    /**
-     * Changes a PIN after verifying the old one.
-     */
     public void changePin(String customerId, String oldPin, String newPin) throws SQLException {
         if (!validatePin(customerId, oldPin)) {
             throw new SecurityException("Old PIN is incorrect. PIN change denied.");
@@ -95,23 +63,25 @@ public class PinService {
         System.out.println("[PinService] PIN changed successfully for: " + customerId);
     }
 
-    // ── Account unlock (admin) ────────────────────────────────────────────────
-
     public void unlockAccount(String customerId) {
         lockedAccounts.remove(customerId);
         failedAttempts.remove(customerId);
         System.out.println("[PinService] Account unlocked: " + customerId);
     }
 
+    public void lockAccount(String customerId) {
+        lockedAccounts.put(customerId, true);
+        failedAttempts.put(customerId, MAX_ATTEMPTS);
+        System.out.println("[PinService] Account LOCKED by admin: " + customerId);
+    }
+
     public boolean isLocked(String customerId) {
         return Boolean.TRUE.equals(lockedAccounts.get(customerId));
     }
 
-    // ── Helpers ───────────────────────────────────────────────────────────────
-
     private void validatePinFormat(String pin) {
         if (pin == null || !pin.matches("\\d{4,6}")) {
-            throw new IllegalArgumentException("PIN must be 4–6 digits.");
+            throw new IllegalArgumentException("PIN must be 4\u20136 digits.");
         }
     }
 

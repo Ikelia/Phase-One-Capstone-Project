@@ -8,21 +8,17 @@ import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
-import java.util.UUID;
 
-/**
- * Service layer that coordinates AccountDAO, TransactionDAO, and
- * ProcessedRequestDAO to perform atomic, idempotent financial operations.
- *
- * Uses JDBC transactions (commit / rollback) for data integrity.
- */
 public class AccountService {
 
     private final AccountDAO          accountDAO          = new AccountDAO();
     private final TransactionDAO      transactionDAO      = new TransactionDAO();
     private final ProcessedRequestDAO processedRequestDAO = new ProcessedRequestDAO();
 
-    // ── Deposit ───────────────────────────────────────────────────────────────
+    private String nextTransactionId() throws SQLException {
+        int count = transactionDAO.countAll();
+        return String.format("TRN-%03d", count + 1);
+    }
 
     public void deposit(String accountId, BigDecimal amount, String referenceId) throws SQLException {
         checkDuplicate(referenceId);
@@ -35,7 +31,7 @@ public class AccountService {
             account.deposit(amount);
             accountDAO.updateBalance(accountId, account.getBalance());
 
-            Transaction tx = new Transaction(UUID.randomUUID().toString(), referenceId,
+            Transaction tx = new Transaction(nextTransactionId(), referenceId,
                     accountId, amount, "DEPOSIT");
             tx.setStatus("SUCCESS");
             transactionDAO.create(tx);
@@ -51,8 +47,6 @@ public class AccountService {
         }
     }
 
-    // ── Withdraw ──────────────────────────────────────────────────────────────
-
     public void withdraw(String accountId, BigDecimal amount, String referenceId) throws SQLException {
         checkDuplicate(referenceId);
         Connection conn = DatabaseConnection.getConnection();
@@ -64,7 +58,7 @@ public class AccountService {
             account.withdraw(amount);
             accountDAO.updateBalance(accountId, account.getBalance());
 
-            Transaction tx = new Transaction(UUID.randomUUID().toString(), referenceId,
+            Transaction tx = new Transaction(nextTransactionId(), referenceId,
                     accountId, amount, "WITHDRAWAL");
             tx.setStatus("SUCCESS");
             transactionDAO.create(tx);
@@ -79,8 +73,6 @@ public class AccountService {
             conn.setAutoCommit(true);
         }
     }
-
-    // ── Transfer ──────────────────────────────────────────────────────────────
 
     public void transfer(String fromAccountId, String toAccountId,
                          BigDecimal amount, String referenceId) throws SQLException {
@@ -99,14 +91,12 @@ public class AccountService {
             accountDAO.updateBalance(fromAccountId, from.getBalance());
             accountDAO.updateBalance(toAccountId,   to.getBalance());
 
-            // Debit record
-            Transaction debit = new Transaction(UUID.randomUUID().toString(),
+            Transaction debit = new Transaction(nextTransactionId(),
                     referenceId + "-DEBIT", fromAccountId, amount, "TRANSFER");
             debit.setStatus("SUCCESS");
             transactionDAO.create(debit);
 
-            // Credit record
-            Transaction credit = new Transaction(UUID.randomUUID().toString(),
+            Transaction credit = new Transaction(nextTransactionId(),
                     referenceId + "-CREDIT", toAccountId, amount, "TRANSFER");
             credit.setStatus("SUCCESS");
             transactionDAO.create(credit);
@@ -122,13 +112,9 @@ public class AccountService {
         }
     }
 
-    // ── Transaction history ───────────────────────────────────────────────────
-
     public List<Transaction> getHistory(String accountId) throws SQLException {
         return transactionDAO.findByAccountId(accountId);
     }
-
-    // ── Idempotency guard ─────────────────────────────────────────────────────
 
     private void checkDuplicate(String referenceId) throws SQLException {
         if (processedRequestDAO.exists(referenceId)) {

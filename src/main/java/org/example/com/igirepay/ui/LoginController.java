@@ -18,51 +18,40 @@ import java.util.Optional;
 
 public class LoginController {
 
-    // ── Admin credentials ─────────────────────────────────────────────────────
     private static final String ADMIN_USERNAME = "admin";
     private static final String ADMIN_PASSWORD = "admin123";
 
-    // ── FXML fields ───────────────────────────────────────────────────────────
     @FXML private RadioButton   userRadio;
     @FXML private RadioButton   adminRadio;
 
-    // User fields
     @FXML private VBox          userFields;
     @FXML private TextField     phoneField;
     @FXML private PasswordField pinField;
 
-    // Admin fields
     @FXML private VBox          adminFields;
     @FXML private TextField     usernameField;
     @FXML private PasswordField passwordField;
 
-    // Shared
     @FXML private Label         errorLabel;
     @FXML private HBox          registerBox;
 
     private final CustomerDAO customerDAO = new CustomerDAO();
     private final PinService  pinService  = new PinService();
 
-    // ── Toggle between User and Admin mode ────────────────────────────────────
-
     @FXML
     private void handleToggle() {
         boolean isAdmin = adminRadio.isSelected();
 
-        // Show/hide the correct field set
         userFields.setVisible(!isAdmin);
         userFields.setManaged(!isAdmin);
         adminFields.setVisible(isAdmin);
         adminFields.setManaged(isAdmin);
 
-        // Hide register link for admin
         registerBox.setVisible(!isAdmin);
         registerBox.setManaged(!isAdmin);
 
         errorLabel.setText("");
     }
-
-    // ── Login handler ─────────────────────────────────────────────────────────
 
     @FXML
     private void handleLogin() {
@@ -127,8 +116,6 @@ public class LoginController {
         }
     }
 
-    // ── Navigation ────────────────────────────────────────────────────────────
-
     @FXML
     private void handleGoToRegister() {
         try {
@@ -137,7 +124,7 @@ public class LoginController {
             Parent root = loader.load();
             Stage stage = (Stage) phoneField.getScene().getWindow();
             stage.setScene(new Scene(root, 500, 640));
-            stage.setTitle("IgirePay – Register");
+            stage.setTitle("IgirePay \u2013 Register");
             stage.centerOnScreen();
         } catch (IOException e) {
             showError("Navigation Error", "Could not open register screen.", e.getMessage());
@@ -150,7 +137,7 @@ public class LoginController {
         Parent root = loader.load();
         Stage stage = (Stage) phoneField.getScene().getWindow();
         stage.setScene(new Scene(root, 900, 600));
-        stage.setTitle("IgirePay – Dashboard");
+        stage.setTitle("IgirePay \u2013 Dashboard");
         stage.centerOnScreen();
     }
 
@@ -162,7 +149,7 @@ public class LoginController {
             Parent root = loader.load();
             Stage stage = (Stage) usernameField.getScene().getWindow();
             stage.setScene(new Scene(root, 1200, 700));
-            stage.setTitle("IgirePay – Admin Panel");
+            stage.setTitle("IgirePay \u2013 Admin Panel");
             stage.centerOnScreen();
         } catch (IOException e) {
             showError("Navigation Error", "Could not open admin panel.", e.getMessage());

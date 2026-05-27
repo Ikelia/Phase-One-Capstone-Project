@@ -29,7 +29,7 @@
                        maxWidth="Infinity" styleClass="text-field"/>
 
             <Label text="Phone Number" styleClass="label-field" style="-fx-padding: 10 0 0 0;"/>
-            <TextField fx:id="phoneField" promptText="e.g. 0780909022"
+            <TextField fx:id="phoneField" promptText="e.g. 0790563487 or +250790563487"
                        maxWidth="Infinity" styleClass="text-field"/>
 
             <Label text="PIN (4–6 digits)" styleClass="label-field" style="-fx-padding: 10 0 0 0;"/>

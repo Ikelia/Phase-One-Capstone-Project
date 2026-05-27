@@ -15,78 +15,54 @@ import java.util.Optional;
 import java.util.Scanner;
 import java.util.UUID;
 
-/**
- * IgirePay – Menu-Driven Console Application (Lab 3 Capstone).
- *
- * On startup, asks which lab to run:
- *   1 → Lab 1 (pure OOP, no database needed)
- *   2 → Lab 2 / Lab 3 (requires PostgreSQL)
- */
 public class ConsoleApp {
 
     private static final Scanner scanner = new Scanner(System.in);
 
-    // ── Lab 1 short ID counters (in-memory) ──────────────────────────────────
     private static int customerCounter = 0;
     private static int accountCounter  = 0;
 
-    // ── Lab 2/3 short ID counters (database) ─────────────────────────────────
     private static int db2CustomerCounter = 0;
     private static int db2AccountCounter  = 0;
 
-    // ── Reference ID counters (shared by Lab 1 and Lab 2) ────────────────────
     private static int depCounter = 0;
     private static int witCounter = 0;
     private static int trfCounter = 0;
 
-    /** Generates DEP-001, DEP-002 ... */
     private static String nextDepRef() { return String.format("DEP-%03d", ++depCounter); }
 
-    /** Generates WIT-001, WIT-002 ... */
     private static String nextWitRef() { return String.format("WIT-%03d", ++witCounter); }
 
-    /** Generates TRF-001, TRF-002 ... */
     private static String nextTrfRef() { return String.format("TRF-%03d", ++trfCounter); }
 
-    // ── Lab 2/3 services (only used when Lab 2/3 is selected) ────────────────
     private static final CustomerDAO    customerDAO    = new CustomerDAO();
     private static final AccountDAO     accountDAO     = new AccountDAO();
     private static final AccountService accountService = new AccountService();
     private static final PinService     pinService     = new PinService();
     private static final ReportService  reportService  = new ReportService();
 
-    // ── Lab 1 in-memory service ───────────────────────────────────────────────
     private static final PaymentService paymentService = new PaymentService();
 
-    /** Lab 1: Generates IDs like CUS-001, CUS-002 ... */
     private static String nextCustomerId() {
         return String.format("CUS-%03d", ++customerCounter);
     }
 
-    /** Lab 1: Generates IDs like ACC-001, ACC-002 ... */
     private static String nextAccountId() {
         return String.format("ACC-%03d", ++accountCounter);
     }
 
-    /** Lab 2: Generates IDs like CUS-001, CUS-002 ... stored in DB */
     private static String nextDbCustomerId() {
         return String.format("CUS-%03d", ++db2CustomerCounter);
     }
 
-    /** Lab 2: Generates IDs like ACC-001, ACC-002 ... stored in DB */
     private static String nextDbAccountId() {
         return String.format("ACC-%03d", ++db2AccountCounter);
     }
 
-    // ── Reference ID counter ──────────────────────────────────────────────────
     private static int refCounter = 0;
     private static String nextRefId(String prefix) {
         return String.format("%s-%03d", prefix, ++refCounter);
     }
-
-    // ═══════════════════════════════════════════════════════════════════════════
-    // ENTRY POINT
-    // ═══════════════════════════════════════════════════════════════════════════
 
     public static void main(String[] args) {
         System.out.println("╔══════════════════════════════════════╗");
@@ -112,10 +88,6 @@ public class ConsoleApp {
                 System.out.println("Invalid choice. Exiting.");
         }
     }
-
-    // ═══════════════════════════════════════════════════════════════════════════
-    // LAB 1 – Pure OOP, no database
-    // ═══════════════════════════════════════════════════════════════════════════
 
     private static void runLab1() {
         System.out.println("\n╔══════════════════════════════════════╗");
@@ -166,7 +138,6 @@ public class ConsoleApp {
         System.out.println("──────────────────────────────────────");
     }
 
-    // ── Lab 1: Register customer ──────────────────────────────────────────────
     private static void lab1RegisterCustomer() {
         System.out.println("\n── Register Customer (Lab 1) ──");
         String id    = nextCustomerId();
@@ -180,7 +151,6 @@ public class ConsoleApp {
         System.out.println(customer);
     }
 
-    // ── Lab 1: Create account ─────────────────────────────────────────────────
     private static void lab1CreateAccount() {
         System.out.println("\n── Create Account (Lab 1) ──");
         System.out.println("  1. Wallet Account");
@@ -208,7 +178,6 @@ public class ConsoleApp {
         System.out.println(account);
     }
 
-    // ── Lab 1: Deposit ────────────────────────────────────────────────────────
     private static void lab1Deposit() {
         System.out.println("\n── Deposit (Lab 1) ──");
         String accountId   = readString("Account ID");
@@ -223,7 +192,6 @@ public class ConsoleApp {
         System.out.println("Result: " + (success ? "SUCCESS" : "FAILED/DUPLICATE"));
     }
 
-    // ── Lab 1: Withdraw ───────────────────────────────────────────────────────
     private static void lab1Withdraw() {
         System.out.println("\n── Withdraw (Lab 1) ──");
         String accountId   = readString("Account ID");
@@ -238,7 +206,6 @@ public class ConsoleApp {
         System.out.println("Result: " + (success ? "SUCCESS" : "FAILED/DUPLICATE"));
     }
 
-    // ── Lab 1: Transfer ───────────────────────────────────────────────────────
     private static void lab1Transfer() {
         System.out.println("\n── Transfer (Lab 1) ──");
         String fromId      = readString("Source Account ID");
@@ -252,7 +219,6 @@ public class ConsoleApp {
         System.out.println("Result: " + (success ? "SUCCESS" : "FAILED/DUPLICATE"));
     }
 
-    // ── Lab 1: View customers ─────────────────────────────────────────────────
     private static void lab1ViewCustomers() {
         System.out.println("\n── All Customers (Lab 1) ──");
         if (paymentService.getAllCustomers().isEmpty()) {
@@ -268,7 +234,6 @@ public class ConsoleApp {
         }
     }
 
-    // ── Lab 1: View transaction history ──────────────────────────────────────
     private static void lab1ViewTransactionHistory() {
         System.out.println("\n── Transaction History (Lab 1) ──");
         List<Transaction> history = paymentService.getTransactionHistory();
@@ -289,7 +254,6 @@ public class ConsoleApp {
         }
     }
 
-    // ── Lab 1: View failed log ────────────────────────────────────────────────
     private static void lab1ViewFailedLog() {
         System.out.println("\n── Failed / Duplicate Transaction Log (Lab 1) ──");
         List<Transaction> failed = paymentService.getFailedTransactionLog();
@@ -302,15 +266,9 @@ public class ConsoleApp {
         }
     }
 
-    // ═══════════════════════════════════════════════════════════════════════════
-    // LAB 2 / LAB 3 – Full app with database
-    // ═══════════════════════════════════════════════════════════════════════════
-
     private static void runLab2And3() {
-        // Connect to database first
         try {
             SchemaInitializer.initialize();
-            // Initialize counters from existing DB rows so IDs continue from last used
             db2CustomerCounter = customerDAO.countAll();
             db2AccountCounter  = accountDAO.countAll();
         } catch (SQLException e) {
@@ -348,8 +306,6 @@ public class ConsoleApp {
         System.out.println("Goodbye!");
     }
 
-    // ── Main menu ─────────────────────────────────────────────────────────────
-
     private static void printMainMenu() {
         System.out.println("\n──────────────────────────────────────");
         System.out.println("  MAIN MENU (Lab 2 / Lab 3)");
@@ -362,10 +318,6 @@ public class ConsoleApp {
         System.out.println("  0. Exit");
         System.out.println("──────────────────────────────────────");
     }
-
-    // ═══════════════════════════════════════════════════════════════════════════
-    // 1. CUSTOMER MANAGEMENT
-    // ═══════════════════════════════════════════════════════════════════════════
 
     private static void customerMenu() throws SQLException {
         System.out.println("\n── Customer Management ──");
@@ -450,10 +402,6 @@ public class ConsoleApp {
         }
     }
 
-    // ═══════════════════════════════════════════════════════════════════════════
-    // 2. ACCOUNT MANAGEMENT
-    // ═══════════════════════════════════════════════════════════════════════════
-
     private static void accountMenu() throws SQLException {
         System.out.println("\n── Account Management ──");
         System.out.println("  1. Create wallet account");
@@ -520,10 +468,6 @@ public class ConsoleApp {
         System.out.println("Account deleted.");
     }
 
-    // ═══════════════════════════════════════════════════════════════════════════
-    // 3. TRANSACTION MANAGEMENT
-    // ═══════════════════════════════════════════════════════════════════════════
-
     private static void transactionMenu() throws SQLException {
         System.out.println("\n── Transaction Management ──");
         System.out.println("  1. Deposit money");
@@ -585,10 +529,6 @@ public class ConsoleApp {
         }
     }
 
-    // ═══════════════════════════════════════════════════════════════════════════
-    // 4. REPORTS
-    // ═══════════════════════════════════════════════════════════════════════════
-
     private static void reportMenu() throws Exception {
         System.out.println("\n── Reports ──");
         System.out.println("  1. Export transaction history to CSV");
@@ -621,10 +561,6 @@ public class ConsoleApp {
         String accountId = readString("Account ID");
         reportService.printStatement(accountId);
     }
-
-    // ═══════════════════════════════════════════════════════════════════════════
-    // 5. AUTHENTICATION / PIN
-    // ═══════════════════════════════════════════════════════════════════════════
 
     private static void authMenu() throws SQLException {
         System.out.println("\n── Authentication / PIN ──");
@@ -669,10 +605,6 @@ public class ConsoleApp {
         String customerId = readString("Customer ID to unlock");
         pinService.unlockAccount(customerId);
     }
-
-    // ═══════════════════════════════════════════════════════════════════════════
-    // Input helpers
-    // ═══════════════════════════════════════════════════════════════════════════
 
     private static String readString(String prompt) {
         System.out.print(prompt + ": ");

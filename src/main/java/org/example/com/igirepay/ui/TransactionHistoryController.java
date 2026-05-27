@@ -26,9 +26,12 @@ import java.util.ResourceBundle;
 public class TransactionHistoryController implements Initializable {
 
     @FXML private Label                            accountLabel;
+    @FXML private Label                            accountInfoLabel;
     @FXML private Label                            countLabel;
     @FXML private Label                            messageLabel;
     @FXML private TableView<Transaction>           transactionTable;
+
+    @FXML private TableColumn<Transaction, String> txIdCol;
     @FXML private TableColumn<Transaction, String> refIdCol;
     @FXML private TableColumn<Transaction, String> typeCol;
     @FXML private TableColumn<Transaction, String> amountCol;
@@ -37,24 +40,43 @@ public class TransactionHistoryController implements Initializable {
 
     private final AccountService accountService = new AccountService();
     private final ReportService  reportService  = new ReportService();
-    private static final DateTimeFormatter FMT = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+    private static final DateTimeFormatter FMT =
+            DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        refIdCol.setCellValueFactory(d  -> new SimpleStringProperty(d.getValue().getReferenceId()));
-        typeCol.setCellValueFactory(d   -> new SimpleStringProperty(d.getValue().getTransactionType()));
-        amountCol.setCellValueFactory(d -> new SimpleStringProperty(
-                d.getValue().getAmount() != null
-                        ? String.format("%,.2f", d.getValue().getAmount()) : "0.00"));
-        statusCol.setCellValueFactory(d -> new SimpleStringProperty(d.getValue().getStatus()));
-        dateCol.setCellValueFactory(d   -> new SimpleStringProperty(
-                d.getValue().getTimestamp() != null
-                        ? d.getValue().getTimestamp().format(FMT) : "N/A"));
+        txIdCol.setCellValueFactory(d ->
+                new SimpleStringProperty(d.getValue().getTransactionId()));
+
+        refIdCol.setCellValueFactory(d ->
+                new SimpleStringProperty(d.getValue().getReferenceId()));
+
+        typeCol.setCellValueFactory(d ->
+                new SimpleStringProperty(d.getValue().getTransactionType()));
+
+        amountCol.setCellValueFactory(d ->
+                new SimpleStringProperty(
+                        d.getValue().getAmount() != null
+                                ? String.format("%,.2f", d.getValue().getAmount()) : "0.00"));
+
+        statusCol.setCellValueFactory(d ->
+                new SimpleStringProperty(d.getValue().getStatus()));
+
+        dateCol.setCellValueFactory(d ->
+                new SimpleStringProperty(
+                        d.getValue().getTimestamp() != null
+                                ? d.getValue().getTimestamp().format(FMT) : "N/A"));
 
         Account account = SessionManager.getSelectedAccount();
-        if (account == null) { messageLabel.setText("No account selected."); return; }
+        if (account == null) {
+            messageLabel.setText("No account selected.");
+            return;
+        }
 
         accountLabel.setText(account.getAccountId() + "  [" + account.getAccountType() + "]");
+        accountInfoLabel.setText(account.getAccountId()
+                + "  \u00b7  " + account.getAccountType()
+                + "  \u00b7  Balance: RWF " + String.format("%,.2f", account.getBalance()));
 
         try {
             List<Transaction> history = accountService.getHistory(account.getAccountId());
@@ -73,14 +95,15 @@ public class TransactionHistoryController implements Initializable {
         FileChooser fc = new FileChooser();
         fc.setTitle("Save Transaction History");
         fc.setInitialFileName("transactions_" + account.getAccountId() + ".csv");
-        fc.getExtensionFilters().add(new FileChooser.ExtensionFilter("CSV Files", "*.csv"));
+        fc.getExtensionFilters().add(
+                new FileChooser.ExtensionFilter("CSV Files", "*.csv"));
         File file = fc.showSaveDialog((Stage) transactionTable.getScene().getWindow());
 
         if (file != null) {
             try {
                 reportService.exportToCsv(account.getAccountId(), file.getAbsolutePath());
                 messageLabel.setStyle("-fx-text-fill: #2D6A2D;");
-                messageLabel.setText("✔ Exported to: " + file.getAbsolutePath());
+                messageLabel.setText("\u2714 Exported to: " + file.getAbsolutePath());
             } catch (SQLException | IOException e) {
                 showError("Export Error", "Could not export.", e.getMessage());
             }
@@ -95,7 +118,7 @@ public class TransactionHistoryController implements Initializable {
             Parent root = loader.load();
             Stage stage = (Stage) transactionTable.getScene().getWindow();
             stage.setScene(new Scene(root, 900, 600));
-            stage.setTitle("IgirePay – Dashboard");
+            stage.setTitle("IgirePay \u2013 Dashboard");
             stage.centerOnScreen();
         } catch (IOException e) {
             showError("Navigation Error", "Could not return to dashboard.", e.getMessage());
@@ -104,7 +127,9 @@ public class TransactionHistoryController implements Initializable {
 
     private void showError(String title, String header, String content) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle(title); alert.setHeaderText(header); alert.setContentText(content);
+        alert.setTitle(title);
+        alert.setHeaderText(header);
+        alert.setContentText(content);
         alert.showAndWait();
     }
 }

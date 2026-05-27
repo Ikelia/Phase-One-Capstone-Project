@@ -8,12 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-/**
- * Data Access Object for the {@code transactions} table.
- */
 public class TransactionDAO {
-
-    // ── CREATE ────────────────────────────────────────────────────────────────
 
     public void create(Transaction transaction) throws SQLException {
         String sql = "INSERT INTO transactions (id, account_id, reference_id, transaction_type, amount, status) " +
@@ -28,8 +23,6 @@ public class TransactionDAO {
             ps.executeUpdate();
         }
     }
-
-    // ── READ ──────────────────────────────────────────────────────────────────
 
     public Optional<Transaction> findById(String id) throws SQLException {
         String sql = "SELECT id, account_id, reference_id, transaction_type, amount, status, created_at " +
@@ -67,7 +60,6 @@ public class TransactionDAO {
         return list;
     }
 
-    /** Returns transactions for a given account on a specific date (YYYY-MM-DD). */
     public List<Transaction> findByAccountAndDate(String accountId, String date) throws SQLException {
         List<Transaction> list = new ArrayList<>();
         String sql = "SELECT id, account_id, reference_id, transaction_type, amount, status, created_at " +
@@ -82,8 +74,6 @@ public class TransactionDAO {
         return list;
     }
 
-    // ── UPDATE ────────────────────────────────────────────────────────────────
-
     public void updateStatus(String transactionId, String status) throws SQLException {
         String sql = "UPDATE transactions SET status = ? WHERE id = ?";
         try (PreparedStatement ps = DatabaseConnection.getConnection().prepareStatement(sql)) {
@@ -93,8 +83,6 @@ public class TransactionDAO {
         }
     }
 
-    // ── DELETE ────────────────────────────────────────────────────────────────
-
     public void delete(String id) throws SQLException {
         String sql = "DELETE FROM transactions WHERE id = ?";
         try (PreparedStatement ps = DatabaseConnection.getConnection().prepareStatement(sql)) {
@@ -103,7 +91,14 @@ public class TransactionDAO {
         }
     }
 
-    // ── Mapper ────────────────────────────────────────────────────────────────
+    public int countAll() throws SQLException {
+        String sql = "SELECT COUNT(*) FROM transactions";
+        try (PreparedStatement ps = DatabaseConnection.getConnection().prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+            if (rs.next()) return rs.getInt(1);
+        }
+        return 0;
+    }
 
     private Transaction mapRow(ResultSet rs) throws SQLException {
         Transaction t = new Transaction(

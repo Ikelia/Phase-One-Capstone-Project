@@ -65,12 +65,12 @@ public class DepositController implements Initializable {
         try {
             accountService.deposit(accountId, amount, refId);
             messageLabel.setStyle("-fx-text-fill: #2D6A2D;");
-            messageLabel.setText("✔ Deposit of RWF " + amount.toPlainString()
+            messageLabel.setText("\u2714 Deposit of RWF " + amount.toPlainString()
                     + " successful! Ref: " + refId);
             amountField.clear();
             referenceIdField.setText(suggestRef("DEP"));
         } catch (IllegalStateException e) {
-            messageLabel.setText("Duplicate reference ID — use a unique reference.");
+            messageLabel.setText("Duplicate reference ID \u2014 use a unique reference.");
         } catch (IllegalArgumentException e) {
             messageLabel.setText("Error: " + e.getMessage());
         } catch (SQLException e) {
@@ -86,7 +86,7 @@ public class DepositController implements Initializable {
             Parent root = loader.load();
             Stage stage = (Stage) accountIdField.getScene().getWindow();
             stage.setScene(new Scene(root, 900, 600));
-            stage.setTitle("IgirePay – Dashboard");
+            stage.setTitle("IgirePay \u2013 Dashboard");
             stage.centerOnScreen();
         } catch (IOException e) {
             showError("Navigation Error", "Could not return to dashboard.", e.getMessage());

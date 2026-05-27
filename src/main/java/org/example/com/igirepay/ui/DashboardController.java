@@ -71,9 +71,23 @@ public class DashboardController implements Initializable {
                 return;
             }
             accountComboBox.setItems(FXCollections.observableArrayList(accounts));
-            accountComboBox.getSelectionModel().selectFirst();
-            updateBalance(accounts.get(0));
-            SessionManager.setSelectedAccount(accounts.get(0));
+
+            Account previouslySelected = SessionManager.getSelectedAccount();
+            Account toSelect = accounts.get(0);
+
+            if (previouslySelected != null) {
+                for (Account a : accounts) {
+                    if (a.getAccountId().equals(previouslySelected.getAccountId())) {
+                        toSelect = a;
+                        break;
+                    }
+                }
+            }
+
+            accountComboBox.getSelectionModel().select(toSelect);
+            updateBalance(toSelect);
+            SessionManager.setSelectedAccount(toSelect);
+
         } catch (SQLException e) {
             showError("Database Error", "Could not load accounts.", e.getMessage());
         }
@@ -91,18 +105,18 @@ public class DashboardController implements Initializable {
     private void updateBalance(Account account) {
         balanceLabel.setText("RWF " + currencyFormat.format(account.getBalance()));
         accountIdLabel.setText("Account ID: " + account.getAccountId()
-                + "  ·  Type: " + account.getAccountType());
+                + "  \u00b7  Type: " + account.getAccountType());
     }
 
-    @FXML private void handleDeposit()  { if (check()) navigate("/org/example/com/igirepay/ui/DepositView.fxml",           "IgirePay – Deposit",  500, 420); }
-    @FXML private void handleWithdraw() { if (check()) navigate("/org/example/com/igirepay/ui/WithdrawView.fxml",          "IgirePay – Withdraw", 500, 420); }
-    @FXML private void handleTransfer() { if (check()) navigate("/org/example/com/igirepay/ui/TransferView.fxml",          "IgirePay – Transfer", 500, 460); }
-    @FXML private void handleHistory()  { if (check()) navigate("/org/example/com/igirepay/ui/TransactionHistoryView.fxml","IgirePay – History",  900, 600); }
+    @FXML private void handleDeposit()  { if (check()) navigate("/org/example/com/igirepay/ui/DepositView.fxml",           "IgirePay \u2013 Deposit",  500, 420); }
+    @FXML private void handleWithdraw() { if (check()) navigate("/org/example/com/igirepay/ui/WithdrawView.fxml",          "IgirePay \u2013 Withdraw", 500, 420); }
+    @FXML private void handleTransfer() { if (check()) navigate("/org/example/com/igirepay/ui/TransferView.fxml",          "IgirePay \u2013 Transfer", 500, 460); }
+    @FXML private void handleHistory()  { if (check()) navigate("/org/example/com/igirepay/ui/TransactionHistoryView.fxml","IgirePay \u2013 History",  900, 600); }
 
     @FXML
     private void handleLogout() {
         SessionManager.clear();
-        navigate("/org/example/com/igirepay/ui/LoginView.fxml", "IgirePay – Login", 500, 600);
+        navigate("/org/example/com/igirepay/ui/LoginView.fxml", "IgirePay \u2013 Login", 500, 600);
     }
 
     private boolean check() {

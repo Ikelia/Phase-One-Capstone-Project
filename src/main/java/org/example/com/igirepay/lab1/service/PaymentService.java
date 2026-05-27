@@ -7,38 +7,17 @@ import org.example.com.igirepay.lab1.model.Transaction;
 import java.math.BigDecimal;
 import java.util.*;
 
-/**
- * Core in-memory service for Lab 1.
- *
- * Responsibilities:
- *  - Manage customers and their accounts (List / Map).
- *  - Track transaction history (List).
- *  - Detect duplicate transactions using a Set of processed reference IDs.
- *  - Log failed transactions.
- */
 public class PaymentService {
 
-    // ── Collections ───────────────────────────────────────────────────────────
-
-    /** All registered customers, keyed by customerId. */
     private final Map<String, Customer> customerMap = new HashMap<>();
 
-    /** All accounts, keyed by accountId. */
     private final Map<String, Account> accountMap = new HashMap<>();
 
-    /** Full transaction history. */
     private final List<Transaction> transactionHistory = new ArrayList<>();
 
-    /**
-     * Set of already-processed reference IDs.
-     * Using a HashSet gives O(1) lookup – critical for idempotency checks.
-     */
     private final Set<String> processedReferenceIds = new HashSet<>();
 
-    /** Transactions that failed (insufficient funds, duplicates, etc.). */
     private final List<Transaction> failedTransactionLog = new ArrayList<>();
-
-    // ── Customer management ───────────────────────────────────────────────────
 
     public void registerCustomer(Customer customer) {
         if (customerMap.containsKey(customer.getCustomerId())) {
@@ -58,8 +37,6 @@ public class PaymentService {
         return Collections.unmodifiableCollection(customerMap.values());
     }
 
-    // ── Account management ────────────────────────────────────────────────────
-
     public void addAccount(Account account) {
         accountMap.put(account.getAccountId(), account);
         Customer owner = customerMap.get(account.getCustomerId());
@@ -72,18 +49,9 @@ public class PaymentService {
         return a;
     }
 
-    // ── Transaction processing ────────────────────────────────────────────────
-
-    /**
-     * Process a transaction with idempotency protection.
-     *
-     * @param transaction the transaction to process
-     * @return true if processed successfully, false if duplicate
-     */
     public boolean processTransaction(Transaction transaction) {
         String refId = transaction.getReferenceId();
 
-        // ── Duplicate check ───────────────────────────────────────────────────
         if (processedReferenceIds.contains(refId)) {
             transaction.setStatus("DUPLICATE");
             failedTransactionLog.add(transaction);
@@ -91,7 +59,6 @@ public class PaymentService {
             return false;
         }
 
-        // ── Find account and delegate to polymorphic processTransaction ───────
         try {
             Account account = findAccount(transaction.getAccountId());
             account.processTransaction(transaction);
@@ -108,9 +75,6 @@ public class PaymentService {
         }
     }
 
-    /**
-     * Transfer money between two accounts.
-     */
     public boolean transfer(String fromAccountId, String toAccountId,
                             BigDecimal amount, String referenceId) {
         if (processedReferenceIds.contains(referenceId)) {
@@ -124,14 +88,12 @@ public class PaymentService {
             to.deposit(amount);
             processedReferenceIds.add(referenceId);
 
-            // Record debit transaction
             Transaction debit = new Transaction(
                     UUID.randomUUID().toString(), referenceId + "-DEBIT",
                     fromAccountId, amount, "TRANSFER");
             debit.setStatus("SUCCESS");
             transactionHistory.add(debit);
 
-            // Record credit transaction
             Transaction credit = new Transaction(
                     UUID.randomUUID().toString(), referenceId + "-CREDIT",
                     toAccountId, amount, "TRANSFER");
@@ -145,8 +107,6 @@ public class PaymentService {
             return false;
         }
     }
-
-    // ── Reporting helpers ─────────────────────────────────────────────────────
 
     public List<Transaction> getTransactionHistory() {
         return Collections.unmodifiableList(transactionHistory);

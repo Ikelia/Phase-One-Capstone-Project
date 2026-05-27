@@ -19,27 +19,40 @@
             <Label text="Transaction History" styleClass="top-bar-title"/>
             <Region HBox.hgrow="ALWAYS"/>
             <Label fx:id="accountLabel" styleClass="top-bar-welcome" text=""/>
-            <Label fx:id="countLabel"   styleClass="top-bar-welcome"
+            <Label fx:id="countLabel" styleClass="top-bar-welcome"
                    style="-fx-padding: 0 0 0 16;"/>
         </HBox>
     </top>
 
     <!-- CENTER TABLE -->
     <center>
-        <VBox spacing="14" style="-fx-padding: 20 24 10 24;">
-            <TableView fx:id="transactionTable" VBox.vgrow="ALWAYS"
-                       style="-fx-pref-height: 420px;">
+        <VBox spacing="10" style="-fx-padding: 16 24 10 24;">
+
+            <!-- Account info card -->
+            <HBox styleClass="card" spacing="20" alignment="CENTER_LEFT"
+                  style="-fx-padding: 10 16 10 16;">
+                <Label text="Account:" styleClass="label-field"/>
+                <Label fx:id="accountInfoLabel" text=""
+                       style="-fx-font-size:14px; -fx-font-weight:bold;
+                              -fx-text-fill:#2D6A2D;"/>
+            </HBox>
+
+            <!-- Transaction table with all required fields -->
+            <TableView fx:id="transactionTable" VBox.vgrow="ALWAYS">
                 <columns>
-                    <TableColumn fx:id="refIdCol"  text="Reference ID" prefWidth="200"/>
-                    <TableColumn fx:id="typeCol"   text="Type"         prefWidth="110"/>
-                    <TableColumn fx:id="amountCol" text="Amount (RWF)" prefWidth="130"/>
-                    <TableColumn fx:id="statusCol" text="Status"       prefWidth="100"/>
-                    <TableColumn fx:id="dateCol"   text="Date / Time"  prefWidth="170"/>
+                    <TableColumn fx:id="txIdCol"    text="Transaction ID" prefWidth="220"/>
+                    <TableColumn fx:id="refIdCol"   text="Reference ID"   prefWidth="130"/>
+                    <TableColumn fx:id="typeCol"    text="Type"           prefWidth="100"/>
+                    <TableColumn fx:id="amountCol"  text="Amount (RWF)"   prefWidth="120"/>
+                    <TableColumn fx:id="statusCol"  text="Status"         prefWidth="90"/>
+                    <TableColumn fx:id="dateCol"    text="Timestamp"      prefWidth="160"/>
                 </columns>
                 <placeholder>
-                    <Label text="No transactions found." styleClass="label-subtitle"/>
+                    <Label text="No transactions found for this account."
+                           styleClass="label-subtitle"/>
                 </placeholder>
             </TableView>
+
             <Label fx:id="messageLabel" text="" wrapText="true"
                    maxWidth="Infinity" styleClass="label-success"/>
         </VBox>

@@ -71,7 +71,7 @@ public class TransferController implements Initializable {
         try {
             accountService.transfer(fromId, toId, amount, refId);
             messageLabel.setStyle("-fx-text-fill: #2D6A2D;");
-            messageLabel.setText("✔ Transfer of RWF " + amount.toPlainString()
+            messageLabel.setText("\u2714 Transfer of RWF " + amount.toPlainString()
                     + " to " + toId + " successful! Ref: " + refId);
             toAccountField.clear();
             amountField.clear();
@@ -93,7 +93,7 @@ public class TransferController implements Initializable {
             Parent root = loader.load();
             Stage stage = (Stage) fromAccountField.getScene().getWindow();
             stage.setScene(new Scene(root, 900, 600));
-            stage.setTitle("IgirePay – Dashboard");
+            stage.setTitle("IgirePay \u2013 Dashboard");
             stage.centerOnScreen();
         } catch (IOException e) {
             showError("Navigation Error", "Could not return to dashboard.", e.getMessage());

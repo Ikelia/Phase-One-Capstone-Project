@@ -65,7 +65,7 @@ public class WithdrawController implements Initializable {
         try {
             accountService.withdraw(accountId, amount, refId);
             messageLabel.setStyle("-fx-text-fill: #2D6A2D;");
-            messageLabel.setText("✔ Withdrawal of RWF " + amount.toPlainString()
+            messageLabel.setText("\u2714 Withdrawal of RWF " + amount.toPlainString()
                     + " successful! Ref: " + refId);
             amountField.clear();
             referenceIdField.setText(suggestRef("WDR"));
@@ -86,7 +86,7 @@ public class WithdrawController implements Initializable {
             Parent root = loader.load();
             Stage stage = (Stage) accountIdField.getScene().getWindow();
             stage.setScene(new Scene(root, 900, 600));
-            stage.setTitle("IgirePay – Dashboard");
+            stage.setTitle("IgirePay \u2013 Dashboard");
             stage.centerOnScreen();
         } catch (IOException e) {
             showError("Navigation Error", "Could not return to dashboard.", e.getMessage());

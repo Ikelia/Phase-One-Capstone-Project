@@ -10,10 +10,6 @@ import org.example.com.igirepay.lab2.db.SchemaInitializer;
 import java.io.IOException;
 import java.sql.SQLException;
 
-/**
- * JavaFX entry point for IgirePay.
- * Initialises the database schema and opens the Login screen.
- */
 public class HelloApplication extends Application {
 
     @Override
@@ -28,12 +24,11 @@ public class HelloApplication extends Application {
                 HelloApplication.class.getResource(
                         "/org/example/com/igirepay/ui/LoginView.fxml"));
         Parent root = loader.load();
-        stage.setTitle("IgirePay – Login");
+        stage.setTitle("IgirePay \u2013 Login");
         stage.setScene(new Scene(root, 500, 600));
         stage.setResizable(true);
         stage.centerOnScreen();
 
-        // Set window/taskbar icon to IRO logo (safe — won't crash if file missing)
         try {
             java.io.InputStream iconStream = HelloApplication.class
                     .getResourceAsStream("/org/example/com/igirepay/ui/Capture.PNG");

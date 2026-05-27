@@ -28,12 +28,12 @@
 
             <!-- Login type toggle -->
             <HBox alignment="CENTER" spacing="30" style="-fx-padding: 0 0 14 0;">
-                <RadioButton fx:id="userRadio" text="👤  Customer Login"
+                <RadioButton fx:id="userRadio" text="👤  Customer"
                              selected="true" onAction="#handleToggle"
                              styleClass="label-field">
                     <toggleGroup><ToggleGroup fx:id="loginTypeGroup"/></toggleGroup>
                 </RadioButton>
-                <RadioButton fx:id="adminRadio" text="🔐  Admin Login"
+                <RadioButton fx:id="adminRadio" text="🔐  Admin"
                              toggleGroup="$loginTypeGroup"
                              onAction="#handleToggle"
                              styleClass="label-field"/>
@@ -42,7 +42,7 @@
             <!-- ── USER fields (phone + PIN) ── -->
             <VBox fx:id="userFields" spacing="6" maxWidth="Infinity">
                 <Label text="Phone Number" styleClass="label-field"/>
-                <TextField fx:id="phoneField" promptText="e.g. 0780909022"
+                <TextField fx:id="phoneField" promptText="e.g. 0790563487 or +250790563487"
                            maxWidth="Infinity" styleClass="text-field"/>
                 <Label text="PIN" styleClass="label-field"
                        style="-fx-padding: 8 0 0 0;"/>

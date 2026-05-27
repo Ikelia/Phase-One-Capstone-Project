@@ -17,77 +17,93 @@
                 <image><Image url="@Capture.PNG"/></image>
             </ImageView>
             <Label text="IgirePay" styleClass="top-bar-title"/>
-            <Label text="— Admin Panel" style="-fx-font-size:14px;
-                   -fx-text-fill: #D4820A; -fx-font-weight:bold;"/>
+            <Label text="— Admin Panel"
+                   style="-fx-font-size:14px; -fx-text-fill:#D4820A; -fx-font-weight:bold;"/>
             <Region HBox.hgrow="ALWAYS"/>
             <Label fx:id="statusLabel" styleClass="top-bar-welcome" text=""/>
             <Button text="🔄 Refresh" onAction="#handleRefresh"
-                    styleClass="btn-accent" style="-fx-padding: 6 14 6 14;"/>
+                    styleClass="btn-accent" style="-fx-padding:6 14 6 14;"/>
             <Button text="Logout" onAction="#handleLogout" styleClass="btn-danger"/>
         </HBox>
     </top>
 
-    <!-- MAIN CONTENT: 3 panels side by side -->
+    <!-- MAIN CONTENT -->
     <center>
-        <HBox spacing="16" style="-fx-padding: 16;">
+        <HBox spacing="0" style="-fx-padding:12;">
 
-            <!-- PANEL 1: All Customers -->
-            <VBox spacing="8" HBox.hgrow="ALWAYS" prefWidth="320">
-                <Label text="👥 All Customers" styleClass="label-title"
-                       style="-fx-font-size:15px;"/>
-                <Label fx:id="selectedCustomerLabel" text=""
-                       style="-fx-text-fill:#2D6A2D; -fx-font-weight:bold;
-                              -fx-font-size:12px;" wrapText="true"/>
-                <TableView fx:id="customerTable" VBox.vgrow="ALWAYS">
+            <!-- LEFT: Customers + Admin Actions -->
+            <VBox spacing="6" prefWidth="230" style="-fx-padding:0 8 0 0;">
+                <Label text="👥 Customers" styleClass="label-title" style="-fx-font-size:14px;"/>
+                <Label fx:id="selectedCustomerLabel" text="← Click a customer"
+                       style="-fx-text-fill:#2D6A2D; -fx-font-size:11px;" wrapText="true"/>
+                <TableView fx:id="customerTable" VBox.vgrow="ALWAYS" prefHeight="280">
                     <columns>
-                        <TableColumn fx:id="colCustId"    text="ID"    prefWidth="90"/>
-                        <TableColumn fx:id="colCustName"  text="Name"  prefWidth="130"/>
-                        <TableColumn fx:id="colCustEmail" text="Email" prefWidth="160"/>
-                        <TableColumn fx:id="colCustPhone" text="Phone" prefWidth="110"/>
+                        <TableColumn fx:id="colCustId"   text="ID"   prefWidth="70"/>
+                        <TableColumn fx:id="colCustName" text="Name" prefWidth="140"/>
+                        <TableColumn fx:id="colCustEmail" text="Email" prefWidth="0" visible="false"/>
+                        <TableColumn fx:id="colCustPhone" text="Phone" prefWidth="0" visible="false"/>
                     </columns>
-                    <placeholder>
-                        <Label text="No customers found." styleClass="label-subtitle"/>
-                    </placeholder>
+                    <placeholder><Label text="No customers." styleClass="label-subtitle"/></placeholder>
                 </TableView>
+
+                <!-- Admin Action Menu -->
+                <Label text="⚙ Admin Actions" styleClass="label-field"
+                       style="-fx-font-size:12px; -fx-padding:8 0 2 0;"/>
+                <VBox spacing="4">
+                    <Button text="1. View All Customers"        onAction="#handleViewAllCustomers"   maxWidth="Infinity" styleClass="btn-primary" style="-fx-font-size:11px; -fx-padding:6 8 6 8;"/>
+                    <Button text="2. View Customer Accounts"    onAction="#handleViewAccounts"       maxWidth="Infinity" styleClass="btn-primary" style="-fx-font-size:11px; -fx-padding:6 8 6 8;"/>
+                    <Button text="3. View Wallet Balance"       onAction="#handleViewWalletBalance"  maxWidth="Infinity" styleClass="btn-primary" style="-fx-font-size:11px; -fx-padding:6 8 6 8;"/>
+                    <Button text="4. View Savings Balance"      onAction="#handleViewSavingsBalance" maxWidth="Infinity" styleClass="btn-primary" style="-fx-font-size:11px; -fx-padding:6 8 6 8;"/>
+                    <Button text="5. View Recent Transactions"  onAction="#handleViewTransactions"   maxWidth="Infinity" styleClass="btn-primary" style="-fx-font-size:11px; -fx-padding:6 8 6 8;"/>
+                    <Button text="6. 🔒 Lock Account"           onAction="#handleLockAccount"        maxWidth="Infinity" styleClass="btn-danger"  style="-fx-font-size:11px; -fx-padding:6 8 6 8;"/>
+                    <Button text="7. 🔓 Unlock Account"         onAction="#handleUnlockAccount"      maxWidth="Infinity" styleClass="btn-accent"  style="-fx-font-size:11px; -fx-padding:6 8 6 8;"/>
+                    <Button text="8. View Failed Transactions"  onAction="#handleViewFailed"         maxWidth="Infinity" styleClass="btn-primary" style="-fx-font-size:11px; -fx-padding:6 8 6 8;"/>
+                    <Button text="9. Generate Report (CSV)"     onAction="#handleGenerateReport"     maxWidth="Infinity" styleClass="btn-accent"  style="-fx-font-size:11px; -fx-padding:6 8 6 8;"/>
+                </VBox>
             </VBox>
 
-            <Separator orientation="VERTICAL"/>
+            <Separator orientation="VERTICAL" style="-fx-padding:0 4 0 4;"/>
 
-            <!-- PANEL 2: Accounts for selected customer -->
-            <VBox spacing="8" HBox.hgrow="ALWAYS" prefWidth="280">
-                <Label text="🏦 Accounts" styleClass="label-title"
-                       style="-fx-font-size:15px;"/>
-                <Label fx:id="selectedAccountLabel" text=""
-                       style="-fx-text-fill:#D4820A; -fx-font-weight:bold;
-                              -fx-font-size:12px;" wrapText="true"/>
+            <!-- MIDDLE: Accounts -->
+            <VBox spacing="6" prefWidth="230" style="-fx-padding:0 8 0 8;">
+                <Label text="🏦 Accounts" styleClass="label-title" style="-fx-font-size:14px;"/>
+                <Label fx:id="selectedAccountLabel" text="← Click an account"
+                       style="-fx-text-fill:#D4820A; -fx-font-size:11px;" wrapText="true"/>
                 <TableView fx:id="accountTable" VBox.vgrow="ALWAYS">
                     <columns>
-                        <TableColumn fx:id="colAccId"      text="Account ID" prefWidth="120"/>
-                        <TableColumn fx:id="colAccType"    text="Type"       prefWidth="80"/>
-                        <TableColumn fx:id="colAccBalance" text="Balance"    prefWidth="120"/>
+                        <TableColumn fx:id="colAccId"      text="Account ID" prefWidth="90"/>
+                        <TableColumn fx:id="colAccType"    text="Type"       prefWidth="70"/>
+                        <TableColumn fx:id="colAccBalance" text="Balance"    prefWidth="110"/>
                     </columns>
-                    <placeholder>
-                        <Label text="Select a customer." styleClass="label-subtitle"/>
-                    </placeholder>
+                    <placeholder><Label text="Select customer." styleClass="label-subtitle"/></placeholder>
                 </TableView>
+                <!-- Balance info labels -->
+                <Label fx:id="walletBalanceLabel" text=""
+                       style="-fx-text-fill:#2D6A2D; -fx-font-weight:bold; -fx-font-size:12px;"/>
+                <Label fx:id="savingsBalanceLabel" text=""
+                       style="-fx-text-fill:#D4820A; -fx-font-weight:bold; -fx-font-size:12px;"/>
             </VBox>
 
-            <Separator orientation="VERTICAL"/>
+            <Separator orientation="VERTICAL" style="-fx-padding:0 4 0 4;"/>
 
-            <!-- PANEL 3: Transactions for selected account -->
-            <VBox spacing="8" HBox.hgrow="ALWAYS" prefWidth="420">
-                <Label text="📋 Transactions" styleClass="label-title"
-                       style="-fx-font-size:15px;"/>
+            <!-- RIGHT: Transactions -->
+            <VBox spacing="6" HBox.hgrow="ALWAYS" style="-fx-padding:0 0 0 8;">
+                <Label fx:id="transactionPanelTitle" text="📋 All Transactions"
+                       styleClass="label-title" style="-fx-font-size:14px;"/>
+                <Label text="Transaction ID · Reference ID · Type · Amount · Timestamp"
+                       styleClass="label-subtitle" style="-fx-font-size:11px;"/>
                 <TableView fx:id="transactionTable" VBox.vgrow="ALWAYS">
                     <columns>
-                        <TableColumn fx:id="colTxRef"    text="Reference ID" prefWidth="130"/>
-                        <TableColumn fx:id="colTxType"   text="Type"         prefWidth="90"/>
-                        <TableColumn fx:id="colTxAmount" text="Amount"       prefWidth="100"/>
-                        <TableColumn fx:id="colTxStatus" text="Status"       prefWidth="80"/>
-                        <TableColumn fx:id="colTxDate"   text="Date"         prefWidth="130"/>
+                        <TableColumn fx:id="colTxId"     text="Transaction ID" prefWidth="100"/>
+                        <TableColumn fx:id="colTxRef"    text="Reference ID"   prefWidth="120"/>
+                        <TableColumn fx:id="colTxType"   text="Type"           prefWidth="85"/>
+                        <TableColumn fx:id="colTxAmount" text="Amount (RWF)"   prefWidth="110"/>
+                        <TableColumn fx:id="colTxStatus" text="Status"         prefWidth="80"/>
+                        <TableColumn fx:id="colTxDate"   text="Timestamp"      prefWidth="140"/>
                     </columns>
                     <placeholder>
-                        <Label text="Select an account." styleClass="label-subtitle"/>
+                        <Label text="Select a customer to view transactions."
+                               styleClass="label-subtitle"/>
                     </placeholder>
                 </TableView>
             </VBox>
@@ -96,7 +112,7 @@
 
     <!-- FOOTER -->
     <bottom>
-        <HBox alignment="CENTER" style="-fx-padding: 8;">
+        <HBox alignment="CENTER" style="-fx-padding:8;">
             <Label text="© 2026 IgirePay Admin Panel · Igire Rwanda Organization"
                    styleClass="footer-label"/>
         </HBox>

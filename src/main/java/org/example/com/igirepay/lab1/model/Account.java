@@ -3,10 +3,6 @@ package org.example.com.igirepay.lab1.model;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
-/**
- * Base class representing a bank/wallet account.
- * Encapsulates common account fields and behaviour shared by all account types.
- */
 public abstract class Account {
 
     private String accountId;
@@ -14,8 +10,6 @@ public abstract class Account {
     private String accountType;
     private BigDecimal balance;
     private LocalDateTime createdAt;
-
-    // ── Constructors ──────────────────────────────────────────────────────────
 
     public Account() {
         this.createdAt = LocalDateTime.now();
@@ -30,26 +24,11 @@ public abstract class Account {
         this.createdAt   = LocalDateTime.now();
     }
 
-    // ── Abstract operations (polymorphism hooks) ──────────────────────────────
-
-    /**
-     * Deposit an amount into this account.
-     * Subclasses may apply rules (e.g. interest, caps).
-     */
     public abstract void deposit(BigDecimal amount);
 
-    /**
-     * Withdraw an amount from this account.
-     * Subclasses may apply rules (e.g. fees, limits).
-     */
     public abstract void withdraw(BigDecimal amount);
 
-    /**
-     * Process a transaction against this account.
-     */
     public abstract void processTransaction(Transaction transaction);
-
-    // ── Shared helper ─────────────────────────────────────────────────────────
 
     protected void validatePositive(BigDecimal amount) {
         if (amount == null || amount.compareTo(BigDecimal.ZERO) <= 0) {
@@ -63,8 +42,6 @@ public abstract class Account {
                     "Insufficient balance. Available: " + balance + ", Requested: " + amount);
         }
     }
-
-    // ── Getters & Setters ─────────────────────────────────────────────────────
 
     public String getAccountId()   { return accountId; }
     public void   setAccountId(String accountId) { this.accountId = accountId; }
@@ -80,8 +57,6 @@ public abstract class Account {
 
     public LocalDateTime getCreatedAt() { return createdAt; }
     public void          setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
-
-    // ── toString ──────────────────────────────────────────────────────────────
 
     @Override
     public String toString() {

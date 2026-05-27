@@ -3,10 +3,6 @@ package org.example.com.igirepay.ui;
 import org.example.com.igirepay.lab1.model.Account;
 import org.example.com.igirepay.lab1.model.Customer;
 
-/**
- * Simple static session holder that carries the logged-in customer and
- * the currently selected account between controllers.
- */
 public class SessionManager {
 
     private static Customer currentCustomer;

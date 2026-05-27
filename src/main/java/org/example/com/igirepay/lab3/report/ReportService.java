@@ -12,31 +12,14 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
-/**
- * Generates transaction reports (Exercise 3.3).
- *
- * Features:
- *  - Export transaction history to CSV
- *  - Daily transaction summary
- *  - Customer transaction statement (console)
- */
 public class ReportService {
 
     private final TransactionDAO transactionDAO = new TransactionDAO();
 
-    // ── CSV Export ────────────────────────────────────────────────────────────
-
-    /**
-     * Exports all transactions for an account to a CSV file.
-     *
-     * @param accountId  the account to export
-     * @param outputPath file path for the CSV (e.g. "transactions.csv")
-     */
     public void exportToCsv(String accountId, String outputPath) throws SQLException, IOException {
         List<Transaction> transactions = transactionDAO.findByAccountId(accountId);
 
         try (CSVWriter writer = new CSVWriter(new FileWriter(outputPath))) {
-            // Header row
             writer.writeNext(new String[]{"Transaction ID", "Reference ID", "Account ID",
                                           "Type", "Amount", "Status", "Timestamp"});
             for (Transaction t : transactions) {
@@ -54,14 +37,6 @@ public class ReportService {
         System.out.println("[Report] Exported " + transactions.size() + " transactions to " + outputPath);
     }
 
-    // ── Daily Summary ─────────────────────────────────────────────────────────
-
-    /**
-     * Prints a daily transaction summary for an account.
-     *
-     * @param accountId the account to summarise
-     * @param date      date in YYYY-MM-DD format; defaults to today if null
-     */
     public void printDailySummary(String accountId, String date) throws SQLException {
         String targetDate = (date != null) ? date
                 : LocalDate.now().format(DateTimeFormatter.ISO_LOCAL_DATE);
@@ -91,11 +66,6 @@ public class ReportService {
         System.out.println("=====================================================\n");
     }
 
-    // ── Customer Statement ────────────────────────────────────────────────────
-
-    /**
-     * Prints a full transaction statement for an account to the console.
-     */
     public void printStatement(String accountId) throws SQLException {
         List<Transaction> transactions = transactionDAO.findByAccountId(accountId);
 

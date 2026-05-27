@@ -2,29 +2,20 @@ package org.example.com.igirepay.lab1.model;
 
 import java.math.BigDecimal;
 
-/**
- * WalletAccount – supports instant transfers with no withdrawal fee.
- * Inherits from Account and overrides deposit / withdraw / processTransaction.
- */
 public class WalletAccount extends Account {
 
-    /** Maximum single-transfer limit (configurable). */
     private BigDecimal transferLimit;
-
-    // ── Constructors ──────────────────────────────────────────────────────────
 
     public WalletAccount() {
         super();
         setAccountType("WALLET");
-        this.transferLimit = new BigDecimal("5000000.00"); // 5 million default
+        this.transferLimit = new BigDecimal("5000000.00");
     }
 
     public WalletAccount(String accountId, String customerId, BigDecimal balance, BigDecimal transferLimit) {
         super(accountId, customerId, "WALLET", balance);
         this.transferLimit = transferLimit;
     }
-
-    // ── Overridden operations ─────────────────────────────────────────────────
 
     @Override
     public void deposit(BigDecimal amount) {
@@ -56,7 +47,7 @@ public class WalletAccount extends Account {
                 withdraw(transaction.getAmount());
                 break;
             case "TRANSFER":
-                withdraw(transaction.getAmount()); // debit side
+                withdraw(transaction.getAmount());
                 break;
             default:
                 throw new IllegalArgumentException("Unknown transaction type: " + transaction.getTransactionType());
@@ -64,12 +55,8 @@ public class WalletAccount extends Account {
         System.out.println("[WalletAccount] Processed transaction: " + transaction.getReferenceId());
     }
 
-    // ── Getters & Setters ─────────────────────────────────────────────────────
-
     public BigDecimal getTransferLimit() { return transferLimit; }
     public void       setTransferLimit(BigDecimal transferLimit) { this.transferLimit = transferLimit; }
-
-    // ── toString ──────────────────────────────────────────────────────────────
 
     @Override
     public String toString() {

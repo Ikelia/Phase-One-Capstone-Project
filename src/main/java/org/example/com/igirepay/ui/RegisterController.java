@@ -51,12 +51,13 @@ public class RegisterController {
             messageLabel.setText("Please enter a valid email address.");
             return;
         }
-        if (!phone.matches("\\d{8,15}")) {
-            messageLabel.setText("Phone number must be 8–15 digits.");
+        if (!phone.matches("0\\d{9}") && !phone.matches("\\+250\\d{9}")) {
+            messageLabel.setText("Enter a valid Rwandan number:\n" +
+                    "Local: 0790563487  or  International: +250790563487");
             return;
         }
         if (!pin.matches("\\d{4,6}")) {
-            messageLabel.setText("PIN must be 4–6 digits.");
+            messageLabel.setText("PIN must be 4\u20136 digits.");
             return;
         }
         if (!pin.equals(confirmPin)) {
@@ -70,19 +71,22 @@ public class RegisterController {
                 messageLabel.setText("A customer with this phone number already exists.");
                 return;
             }
+            Optional<Customer> existingEmail = customerDAO.findByEmail(email);
+            if (existingEmail.isPresent()) {
+                messageLabel.setText("A customer with this email already exists.");
+                return;
+            }
 
             String customerId = String.format("CUS-%03d", customerDAO.countAll() + 1);
             Customer customer = new Customer(customerId, fullName, email, phone);
             customerDAO.create(customer);
             pinService.createPin(customerId, pin);
 
-            // Create a default WalletAccount
             String walletId = String.format("ACC-%03d", accountDAO.countAll() + 1);
             WalletAccount wallet = new WalletAccount(walletId, customerId,
                     BigDecimal.ZERO, new BigDecimal("5000000.00"));
             accountDAO.create(wallet);
 
-            // Create a default SavingsAccount
             String savingsId = String.format("ACC-%03d", accountDAO.countAll() + 1);
             SavingsAccount savings = new SavingsAccount(
                             savingsId, customerId, BigDecimal.ZERO,
@@ -91,13 +95,13 @@ public class RegisterController {
 
             messageLabel.setStyle("-fx-text-fill: #2D6A2D; -fx-font-size: 13px;");
             messageLabel.setText(
-                "✔ Registration successful!\n\n" +
-                "📋 Customer ID : " + customerId + "\n" +
-                "💰 Wallet ID   : " + walletId  + "\n" +
-                "🏦 Savings ID  : " + savingsId + "\n\n" +
-                "Please save these IDs — you will need them to deposit,\n" +
+                "\u2714 Registration successful!\n\n" +
+                "\uD83D\uDCCB Customer ID : " + customerId + "\n" +
+                "\uD83D\uDCB0 Wallet ID   : " + walletId  + "\n" +
+                "\uD83C\uDFE6 Savings ID  : " + savingsId + "\n\n" +
+                "Please save these IDs \u2014 you will need them to deposit,\n" +
                 "withdraw, and transfer money.\n\n" +
-                "Redirecting to login in 5 seconds…");
+                "Redirecting to login in 5 seconds\u2026");
 
             javafx.animation.PauseTransition pause =
                     new javafx.animation.PauseTransition(javafx.util.Duration.seconds(5));
@@ -126,7 +130,7 @@ public class RegisterController {
         Parent root = loader.load();
         Stage stage = (Stage) fullNameField.getScene().getWindow();
         stage.setScene(new Scene(root, 500, 600));
-        stage.setTitle("IgirePay – Login");
+        stage.setTitle("IgirePay \u2013 Login");
         stage.centerOnScreen();
     }
 
