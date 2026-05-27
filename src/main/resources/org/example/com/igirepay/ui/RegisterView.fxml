@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<StackPane xmlns:fx="http://javafx.com/fxml"
+           fx:controller="org.example.com.igirepay.ui.RegisterController"
+           stylesheets="@styles.css"
+           style="-fx-background-color: #F0F4F0;">
+
+    <VBox alignment="CENTER" spacing="0" maxWidth="440">
+        <padding><Insets top="30" bottom="30" left="30" right="30"/></padding>
+
+        <VBox styleClass="login-card" alignment="CENTER_LEFT" spacing="6">
+            <padding><Insets top="30" bottom="30" left="40" right="40"/></padding>
+
+            <Label text="IRO" styleClass="logo-label" style="-fx-font-size: 36px;"/>
+            <Label text="Create New Account" styleClass="label-title"
+                   style="-fx-padding: 8 0 4 0;"/>
+            <Label text="Fill in your details to register" styleClass="label-subtitle"
+                   style="-fx-padding: 0 0 16 0;"/>
+
+            <Label text="Full Name" styleClass="label-field"/>
+            <TextField fx:id="fullNameField" promptText="e.g. Mutabazi Gerome"
+                       maxWidth="Infinity" styleClass="text-field"/>
+
+            <Label text="Email" styleClass="label-field" style="-fx-padding: 10 0 0 0;"/>
+            <TextField fx:id="emailField" promptText="e.g. mutabazi@gmail.com"
+                       maxWidth="Infinity" styleClass="text-field"/>
+
+            <Label text="Phone Number" styleClass="label-field" style="-fx-padding: 10 0 0 0;"/>
+            <TextField fx:id="phoneField" promptText="e.g. 0780909022"
+                       maxWidth="Infinity" styleClass="text-field"/>
+
+            <Label text="PIN (4–6 digits)" styleClass="label-field" style="-fx-padding: 10 0 0 0;"/>
+            <PasswordField fx:id="pinField" promptText="Create a PIN"
+                           maxWidth="Infinity" styleClass="password-field"/>
+
+            <Label text="Confirm PIN" styleClass="label-field" style="-fx-padding: 10 0 0 0;"/>
+            <PasswordField fx:id="confirmPinField" promptText="Repeat your PIN"
+                           maxWidth="Infinity" styleClass="password-field"/>
+
+            <Label fx:id="messageLabel" text="" wrapText="true"
+                   maxWidth="Infinity"
+                   style="-fx-padding: 8 0 0 0; -fx-font-size: 13px;"/>
+
+            <Button text="Register" onAction="#handleRegister"
+                    styleClass="btn-primary" maxWidth="Infinity"
+                    style="-fx-padding: 12 0 12 0; -fx-font-size: 15px;
+                           -fx-margin: 14 0 0 0;"/>
+
+            <HBox alignment="CENTER" style="-fx-padding: 12 0 0 0;">
+                <Label text="Already have an account? " styleClass="label-subtitle"/>
+                <Button text="Login" onAction="#handleGoToLogin" styleClass="btn-link"/>
+            </HBox>
+        </VBox>
+    </VBox>
+</StackPane>

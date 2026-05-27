@@ -1,0 +1,150 @@
+/* IgirePay – Shared Stylesheet  |  IRO Colors: green #2D6A2D, orange #D4820A */
+
+.root {
+    -fx-background-color: #F0F4F0;
+    -fx-font-family: "Segoe UI", Arial, sans-serif;
+    -fx-font-size: 14px;
+}
+
+/* ── Buttons ── */
+.btn-primary {
+    -fx-background-color: #2D6A2D;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-font-size: 14px;
+    -fx-padding: 10 24 10 24;
+    -fx-background-radius: 6;
+    -fx-cursor: hand;
+}
+.btn-primary:hover  { -fx-background-color: #245224; }
+.btn-primary:pressed{ -fx-background-color: #1b3d1b; }
+
+.btn-accent {
+    -fx-background-color: #D4820A;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-font-size: 14px;
+    -fx-padding: 10 24 10 24;
+    -fx-background-radius: 6;
+    -fx-cursor: hand;
+}
+.btn-accent:hover  { -fx-background-color: #b36d08; }
+.btn-accent:pressed{ -fx-background-color: #8f5606; }
+
+.btn-link {
+    -fx-background-color: transparent;
+    -fx-text-fill: #2D6A2D;
+    -fx-font-size: 13px;
+    -fx-cursor: hand;
+    -fx-underline: true;
+    -fx-padding: 4 0 4 0;
+}
+.btn-link:hover { -fx-text-fill: #D4820A; }
+
+.btn-danger {
+    -fx-background-color: #c0392b;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-font-size: 13px;
+    -fx-padding: 8 18 8 18;
+    -fx-background-radius: 6;
+    -fx-cursor: hand;
+}
+.btn-danger:hover { -fx-background-color: #a93226; }
+
+/* ── Inputs ── */
+.text-field, .password-field {
+    -fx-background-color: white;
+    -fx-border-color: #c8d8c8;
+    -fx-border-radius: 5;
+    -fx-background-radius: 5;
+    -fx-padding: 8 12 8 12;
+    -fx-font-size: 14px;
+    -fx-pref-height: 38px;
+}
+.text-field:focused, .password-field:focused {
+    -fx-border-color: #2D6A2D;
+}
+
+/* ── Labels ── */
+.label-title    { -fx-font-size: 22px; -fx-font-weight: bold; -fx-text-fill: #1A1A1A; }
+.label-subtitle { -fx-font-size: 13px; -fx-text-fill: #666666; }
+.label-field    { -fx-font-size: 13px; -fx-font-weight: bold; -fx-text-fill: #333333; }
+.label-error    { -fx-text-fill: #c0392b; -fx-font-size: 12px; -fx-font-weight: bold; }
+.label-success  { -fx-text-fill: #2D6A2D; -fx-font-size: 12px; -fx-font-weight: bold; }
+.footer-label   { -fx-font-size: 11px; -fx-text-fill: #aaaaaa; }
+
+/* ── Logo ── */
+.logo-label {
+    -fx-font-size: 52px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #2D6A2D;
+}
+.brand-label { -fx-font-size: 11px; -fx-text-fill: #888888; -fx-font-style: italic; }
+
+/* ── Cards ── */
+.card {
+    -fx-background-color: white;
+    -fx-background-radius: 10;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.10), 8, 0, 0, 3);
+    -fx-padding: 20;
+}
+.login-card {
+    -fx-background-color: white;
+    -fx-background-radius: 14;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.14), 16, 0, 0, 6);
+    -fx-padding: 36 40 36 40;
+}
+.balance-card {
+    -fx-background-color: linear-gradient(to bottom right, #2D6A2D, #3d8b3d);
+    -fx-background-radius: 12;
+    -fx-effect: dropshadow(gaussian, rgba(45,106,45,0.4), 10, 0, 0, 4);
+    -fx-padding: 24;
+}
+.balance-label-title  { -fx-font-size: 13px; -fx-text-fill: rgba(255,255,255,0.8); }
+.balance-label-amount { -fx-font-size: 32px; -fx-font-weight: bold; -fx-text-fill: white; }
+.balance-label-account{ -fx-font-size: 12px; -fx-text-fill: rgba(255,255,255,0.7); }
+
+/* ── Top Bar ── */
+.top-bar {
+    -fx-background-color: #2D6A2D;
+    -fx-padding: 12 20 12 20;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 6, 0, 0, 3);
+}
+.top-bar-title   { -fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: white; }
+.top-bar-welcome { -fx-font-size: 14px; -fx-text-fill: rgba(255,255,255,0.9); }
+
+/* ── Action Buttons (Dashboard) ── */
+.action-btn {
+    -fx-background-color: white;
+    -fx-border-color: #2D6A2D;
+    -fx-border-width: 2;
+    -fx-border-radius: 10;
+    -fx-background-radius: 10;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #2D6A2D;
+    -fx-cursor: hand;
+    -fx-pref-width: 160px;
+    -fx-pref-height: 80px;
+}
+.action-btn:hover  { -fx-background-color: #2D6A2D; -fx-text-fill: white; }
+.action-btn:pressed{ -fx-background-color: #245224; -fx-text-fill: white; }
+
+/* ── TableView ── */
+.table-view { -fx-background-color: white; -fx-border-color: #dde8dd; -fx-border-radius: 6; }
+.table-view .column-header-background { -fx-background-color: #2D6A2D; }
+.table-view .column-header .label { -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 13px; }
+.table-row-cell:odd  { -fx-background-color: #f7faf7; }
+.table-row-cell:even { -fx-background-color: white; }
+.table-row-cell:selected { -fx-background-color: #c8e6c8; -fx-text-fill: #1A1A1A; }
+
+/* ── ComboBox ── */
+.combo-box {
+    -fx-background-color: white;
+    -fx-border-color: #c8d8c8;
+    -fx-border-radius: 5;
+    -fx-background-radius: 5;
+    -fx-padding: 4 8 4 8;
+    -fx-font-size: 14px;
+}

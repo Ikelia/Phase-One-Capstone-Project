@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane xmlns:fx="http://javafx.com/fxml"
+            fx:controller="org.example.com.igirepay.ui.AdminDashboardController"
+            stylesheets="@styles.css"
+            style="-fx-background-color: #F0F4F0;">
+
+    <!-- TOP BAR -->
+    <top>
+        <HBox styleClass="top-bar" alignment="CENTER_LEFT" spacing="12">
+            <ImageView fitWidth="36" fitHeight="36" preserveRatio="true">
+                <image><Image url="@Capture.PNG"/></image>
+            </ImageView>
+            <Label text="IgirePay" styleClass="top-bar-title"/>
+            <Label text="— Admin Panel" style="-fx-font-size:14px;
+                   -fx-text-fill: #D4820A; -fx-font-weight:bold;"/>
+            <Region HBox.hgrow="ALWAYS"/>
+            <Label fx:id="statusLabel" styleClass="top-bar-welcome" text=""/>
+            <Button text="🔄 Refresh" onAction="#handleRefresh"
+                    styleClass="btn-accent" style="-fx-padding: 6 14 6 14;"/>
+            <Button text="Logout" onAction="#handleLogout" styleClass="btn-danger"/>
+        </HBox>
+    </top>
+
+    <!-- MAIN CONTENT: 3 panels side by side -->
+    <center>
+        <HBox spacing="16" style="-fx-padding: 16;">
+
+            <!-- PANEL 1: All Customers -->
+            <VBox spacing="8" HBox.hgrow="ALWAYS" prefWidth="320">
+                <Label text="👥 All Customers" styleClass="label-title"
+                       style="-fx-font-size:15px;"/>
+                <Label fx:id="selectedCustomerLabel" text=""
+                       style="-fx-text-fill:#2D6A2D; -fx-font-weight:bold;
+                              -fx-font-size:12px;" wrapText="true"/>
+                <TableView fx:id="customerTable" VBox.vgrow="ALWAYS">
+                    <columns>
+                        <TableColumn fx:id="colCustId"    text="ID"    prefWidth="90"/>
+                        <TableColumn fx:id="colCustName"  text="Name"  prefWidth="130"/>
+                        <TableColumn fx:id="colCustEmail" text="Email" prefWidth="160"/>
+                        <TableColumn fx:id="colCustPhone" text="Phone" prefWidth="110"/>
+                    </columns>
+                    <placeholder>
+                        <Label text="No customers found." styleClass="label-subtitle"/>
+                    </placeholder>
+                </TableView>
+            </VBox>
+
+            <Separator orientation="VERTICAL"/>
+
+            <!-- PANEL 2: Accounts for selected customer -->
+            <VBox spacing="8" HBox.hgrow="ALWAYS" prefWidth="280">
+                <Label text="🏦 Accounts" styleClass="label-title"
+                       style="-fx-font-size:15px;"/>
+                <Label fx:id="selectedAccountLabel" text=""
+                       style="-fx-text-fill:#D4820A; -fx-font-weight:bold;
+                              -fx-font-size:12px;" wrapText="true"/>
+                <TableView fx:id="accountTable" VBox.vgrow="ALWAYS">
+                    <columns>
+                        <TableColumn fx:id="colAccId"      text="Account ID" prefWidth="120"/>
+                        <TableColumn fx:id="colAccType"    text="Type"       prefWidth="80"/>
+                        <TableColumn fx:id="colAccBalance" text="Balance"    prefWidth="120"/>
+                    </columns>
+                    <placeholder>
+                        <Label text="Select a customer." styleClass="label-subtitle"/>
+                    </placeholder>
+                </TableView>
+            </VBox>
+
+            <Separator orientation="VERTICAL"/>
+
+            <!-- PANEL 3: Transactions for selected account -->
+            <VBox spacing="8" HBox.hgrow="ALWAYS" prefWidth="420">
+                <Label text="📋 Transactions" styleClass="label-title"
+                       style="-fx-font-size:15px;"/>
+                <TableView fx:id="transactionTable" VBox.vgrow="ALWAYS">
+                    <columns>
+                        <TableColumn fx:id="colTxRef"    text="Reference ID" prefWidth="130"/>
+                        <TableColumn fx:id="colTxType"   text="Type"         prefWidth="90"/>
+                        <TableColumn fx:id="colTxAmount" text="Amount"       prefWidth="100"/>
+                        <TableColumn fx:id="colTxStatus" text="Status"       prefWidth="80"/>
+                        <TableColumn fx:id="colTxDate"   text="Date"         prefWidth="130"/>
+                    </columns>
+                    <placeholder>
+                        <Label text="Select an account." styleClass="label-subtitle"/>
+                    </placeholder>
+                </TableView>
+            </VBox>
+        </HBox>
+    </center>
+
+    <!-- FOOTER -->
+    <bottom>
+        <HBox alignment="CENTER" style="-fx-padding: 8;">
+            <Label text="© 2026 IgirePay Admin Panel · Igire Rwanda Organization"
+                   styleClass="footer-label"/>
+        </HBox>
+    </bottom>
+</BorderPane>

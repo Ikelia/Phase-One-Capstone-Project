@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<StackPane xmlns:fx="http://javafx.com/fxml"
+           fx:controller="org.example.com.igirepay.ui.DepositController"
+           stylesheets="@styles.css"
+           style="-fx-background-color: #F0F4F0;">
+
+    <VBox alignment="CENTER" maxWidth="440">
+        <padding><Insets top="30" bottom="30" left="30" right="30"/></padding>
+
+        <VBox styleClass="card" spacing="10">
+            <padding><Insets top="30" bottom="30" left="36" right="36"/></padding>
+
+            <HBox alignment="CENTER_LEFT" spacing="10">
+                <Label text="💰" style="-fx-font-size:28px;"/>
+                <Label text="Deposit Money" styleClass="label-title"/>
+            </HBox>
+            <Label text="Add funds to your account" styleClass="label-subtitle"
+                   style="-fx-padding: 0 0 12 0;"/>
+
+            <Label text="Account ID" styleClass="label-field"/>
+            <TextField fx:id="accountIdField" editable="false"
+                       maxWidth="Infinity" styleClass="text-field"
+                       style="-fx-background-color: #f0f0f0;"/>
+
+            <Label text="Amount (RWF)" styleClass="label-field"
+                   style="-fx-padding: 10 0 0 0;"/>
+            <TextField fx:id="amountField" promptText="e.g. 5000"
+                       maxWidth="Infinity" styleClass="text-field"/>
+
+            <Label text="Reference ID" styleClass="label-field"
+                   style="-fx-padding: 10 0 0 0;"/>
+            <TextField fx:id="referenceIdField" promptText="e.g. DEP-001"
+                       maxWidth="Infinity" styleClass="text-field"/>
+
+            <Label fx:id="messageLabel" text="" wrapText="true"
+                   maxWidth="Infinity" style="-fx-padding: 8 0 0 0;"/>
+
+            <HBox spacing="12" style="-fx-padding: 14 0 0 0;">
+                <Button text="← Back" onAction="#handleBack"
+                        styleClass="btn-link" style="-fx-font-size:14px;"/>
+                <Region HBox.hgrow="ALWAYS"/>
+                <Button text="Deposit" onAction="#handleDeposit"
+                        styleClass="btn-primary" prefWidth="140"/>
+            </HBox>
+        </VBox>
+    </VBox>
+</StackPane>

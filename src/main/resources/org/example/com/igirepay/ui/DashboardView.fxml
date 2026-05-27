@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane xmlns:fx="http://javafx.com/fxml"
+            fx:controller="org.example.com.igirepay.ui.DashboardController"
+            stylesheets="@styles.css"
+            style="-fx-background-color: #F0F4F0;">
+
+    <!-- TOP BAR -->
+    <top>
+        <HBox styleClass="top-bar" alignment="CENTER_LEFT" spacing="12">
+            <ImageView fitWidth="36" fitHeight="36" preserveRatio="true">
+                <image><Image url="@Capture.PNG"/></image>
+            </ImageView>
+            <Label text="IgirePay" styleClass="top-bar-title"/>
+            <Region HBox.hgrow="ALWAYS"/>
+            <Label fx:id="welcomeLabel" styleClass="top-bar-welcome" text="Welcome"/>
+            <Button text="Logout" onAction="#handleLogout" styleClass="btn-danger"/>
+        </HBox>
+    </top>
+
+    <!-- CENTER CONTENT -->
+    <center>
+        <VBox spacing="16" style="-fx-padding: 24 32 24 32;">
+
+            <!-- Customer ID info card -->
+            <HBox styleClass="card" spacing="20" alignment="CENTER_LEFT"
+                  style="-fx-padding: 14 20 14 20;">
+                <VBox spacing="2">
+                    <Label text="Customer ID" styleClass="label-field"
+                           style="-fx-font-size:11px; -fx-text-fill:#888888;"/>
+                    <Label fx:id="customerIdLabel" text=""
+                           style="-fx-font-size:15px; -fx-font-weight:bold;
+                                  -fx-text-fill:#2D6A2D;"/>
+                </VBox>
+                <Separator orientation="VERTICAL" style="-fx-padding: 0 8 0 8;"/>
+                <VBox spacing="2">
+                    <Label text="Full Name" styleClass="label-field"
+                           style="-fx-font-size:11px; -fx-text-fill:#888888;"/>
+                    <Label fx:id="customerNameLabel" text=""
+                           style="-fx-font-size:15px; -fx-font-weight:bold;
+                                  -fx-text-fill:#1A1A1A;"/>
+                </VBox>
+            </HBox>
+
+            <!-- Account selector row -->
+            <HBox spacing="14" alignment="CENTER_LEFT">
+                <Label text="Select Account:" styleClass="label-field"/>
+                <ComboBox fx:id="accountComboBox" onAction="#handleAccountSelected"
+                          prefWidth="340" styleClass="combo-box"/>
+                <Label fx:id="statusLabel" text="" styleClass="label-error"/>
+            </HBox>
+
+            <!-- Balance card -->
+            <VBox styleClass="balance-card" spacing="6" maxWidth="460">
+                <Label text="AVAILABLE BALANCE" styleClass="balance-label-title"/>
+                <Label fx:id="balanceLabel" text="RWF 0.00" styleClass="balance-label-amount"/>
+                <Label fx:id="accountIdLabel" text="" styleClass="balance-label-account"/>
+            </VBox>
+
+            <!-- Action buttons -->
+            <Label text="Quick Actions" styleClass="label-title"
+                   style="-fx-font-size:16px; -fx-padding: 4 0 0 0;"/>
+            <HBox spacing="16" alignment="CENTER_LEFT">
+                <Button text="💰 Deposit"  onAction="#handleDeposit"  styleClass="action-btn"/>
+                <Button text="💸 Withdraw" onAction="#handleWithdraw" styleClass="action-btn"/>
+                <Button text="🔄 Transfer" onAction="#handleTransfer" styleClass="action-btn"/>
+                <Button text="📋 History"  onAction="#handleHistory"  styleClass="action-btn"/>
+            </HBox>
+        </VBox>
+    </center>
+
+    <!-- FOOTER -->
+    <bottom>
+        <HBox alignment="CENTER" style="-fx-padding: 10;">
+            <Label text="© 2026 IgirePay · Igire Rwanda Organization"
+                   styleClass="footer-label"/>
+        </HBox>
+    </bottom>
+</BorderPane>

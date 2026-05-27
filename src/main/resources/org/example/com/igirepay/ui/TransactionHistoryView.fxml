@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane xmlns:fx="http://javafx.com/fxml"
+            fx:controller="org.example.com.igirepay.ui.TransactionHistoryController"
+            stylesheets="@styles.css"
+            style="-fx-background-color: #F0F4F0;">
+
+    <!-- TOP BAR -->
+    <top>
+        <HBox styleClass="top-bar" alignment="CENTER_LEFT" spacing="12">
+            <ImageView fitWidth="36" fitHeight="36" preserveRatio="true">
+                <image><Image url="@Capture.PNG"/></image>
+            </ImageView>
+            <Label text="Transaction History" styleClass="top-bar-title"/>
+            <Region HBox.hgrow="ALWAYS"/>
+            <Label fx:id="accountLabel" styleClass="top-bar-welcome" text=""/>
+            <Label fx:id="countLabel"   styleClass="top-bar-welcome"
+                   style="-fx-padding: 0 0 0 16;"/>
+        </HBox>
+    </top>
+
+    <!-- CENTER TABLE -->
+    <center>
+        <VBox spacing="14" style="-fx-padding: 20 24 10 24;">
+            <TableView fx:id="transactionTable" VBox.vgrow="ALWAYS"
+                       style="-fx-pref-height: 420px;">
+                <columns>
+                    <TableColumn fx:id="refIdCol"  text="Reference ID" prefWidth="200"/>
+                    <TableColumn fx:id="typeCol"   text="Type"         prefWidth="110"/>
+                    <TableColumn fx:id="amountCol" text="Amount (RWF)" prefWidth="130"/>
+                    <TableColumn fx:id="statusCol" text="Status"       prefWidth="100"/>
+                    <TableColumn fx:id="dateCol"   text="Date / Time"  prefWidth="170"/>
+                </columns>
+                <placeholder>
+                    <Label text="No transactions found." styleClass="label-subtitle"/>
+                </placeholder>
+            </TableView>
+            <Label fx:id="messageLabel" text="" wrapText="true"
+                   maxWidth="Infinity" styleClass="label-success"/>
+        </VBox>
+    </center>
+
+    <!-- BOTTOM BUTTONS -->
+    <bottom>
+        <HBox spacing="12" alignment="CENTER_RIGHT"
+              style="-fx-padding: 10 24 16 24; -fx-background-color: #F0F4F0;">
+            <Button text="← Back to Dashboard" onAction="#handleBack"
+                    styleClass="btn-link" style="-fx-font-size:14px;"/>
+            <Region HBox.hgrow="ALWAYS"/>
+            <Button text="📥 Export to CSV" onAction="#handleExportCsv"
+                    styleClass="btn-accent"/>
+        </HBox>
+    </bottom>
+</BorderPane>
