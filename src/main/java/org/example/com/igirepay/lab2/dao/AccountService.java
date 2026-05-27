@@ -8,21 +8,17 @@ import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
-import java.util.UUID;
 
-/**
- * Service layer that coordinates AccountDAO, TransactionDAO, and
- * ProcessedRequestDAO to perform atomic, idempotent financial operations.
- *
- * Uses JDBC transactions (commit / rollback) for data integrity.
- */
 public class AccountService {
 
     private final AccountDAO          accountDAO          = new AccountDAO();
     private final TransactionDAO      transactionDAO      = new TransactionDAO();
     private final ProcessedRequestDAO processedRequestDAO = new ProcessedRequestDAO();
 
-    // ── Deposit ───────────────────────────────────────────────────────────────
+    private String nextTransactionId() throws SQLException {
+        int count = transactionDAO.countAll();
+        return String.format("TRN-%03d", count + 1);
+    }
 
     public void deposit(String accountId, BigDecimal amount, String referenceId) throws SQLException {
         checkDuplicate(referenceId);
@@ -31,16 +27,12 @@ public class AccountService {
         try {
             Account account = accountDAO.findById(accountId)
                     .orElseThrow(() -> new IllegalArgumentException("Account not found: " + accountId));
-
             account.deposit(amount);
             accountDAO.updateBalance(accountId, account.getBalance());
-
-            Transaction tx = new Transaction(UUID.randomUUID().toString(), referenceId,
-                    accountId, amount, "DEPOSIT");
+            Transaction tx = new Transaction(nextTransactionId(), referenceId, accountId, amount, "DEPOSIT");
             tx.setStatus("SUCCESS");
             transactionDAO.create(tx);
             processedRequestDAO.markProcessed(referenceId);
-
             conn.commit();
             System.out.println("[AccountService] Deposit successful. New balance: " + account.getBalance());
         } catch (Exception e) {
@@ -51,8 +43,6 @@ public class AccountService {
         }
     }
 
-    // ── Withdraw ──────────────────────────────────────────────────────────────
-
     public void withdraw(String accountId, BigDecimal amount, String referenceId) throws SQLException {
         checkDuplicate(referenceId);
         Connection conn = DatabaseConnection.getConnection();
@@ -60,16 +50,12 @@ public class AccountService {
         try {
             Account account = accountDAO.findById(accountId)
                     .orElseThrow(() -> new IllegalArgumentException("Account not found: " + accountId));
-
             account.withdraw(amount);
             accountDAO.updateBalance(accountId, account.getBalance());
-
-            Transaction tx = new Transaction(UUID.randomUUID().toString(), referenceId,
-                    accountId, amount, "WITHDRAWAL");
+            Transaction tx = new Transaction(nextTransactionId(), referenceId, accountId, amount, "WITHDRAWAL");
             tx.setStatus("SUCCESS");
             transactionDAO.create(tx);
             processedRequestDAO.markProcessed(referenceId);
-
             conn.commit();
             System.out.println("[AccountService] Withdrawal successful. New balance: " + account.getBalance());
         } catch (Exception e) {
@@ -79,8 +65,6 @@ public class AccountService {
             conn.setAutoCommit(true);
         }
     }
-
-    // ── Transfer ──────────────────────────────────────────────────────────────
 
     public void transfer(String fromAccountId, String toAccountId,
                          BigDecimal amount, String referenceId) throws SQLException {
@@ -92,25 +76,16 @@ public class AccountService {
                     .orElseThrow(() -> new IllegalArgumentException("Source account not found: " + fromAccountId));
             Account to   = accountDAO.findById(toAccountId)
                     .orElseThrow(() -> new IllegalArgumentException("Destination account not found: " + toAccountId));
-
             from.withdraw(amount);
             to.deposit(amount);
-
             accountDAO.updateBalance(fromAccountId, from.getBalance());
             accountDAO.updateBalance(toAccountId,   to.getBalance());
-
-            // Debit record
-            Transaction debit = new Transaction(UUID.randomUUID().toString(),
-                    referenceId + "-DEBIT", fromAccountId, amount, "TRANSFER");
+            Transaction debit = new Transaction(nextTransactionId(), referenceId + "-DEBIT", fromAccountId, amount, "TRANSFER");
             debit.setStatus("SUCCESS");
             transactionDAO.create(debit);
-
-            // Credit record
-            Transaction credit = new Transaction(UUID.randomUUID().toString(),
-                    referenceId + "-CREDIT", toAccountId, amount, "TRANSFER");
+            Transaction credit = new Transaction(nextTransactionId(), referenceId + "-CREDIT", toAccountId, amount, "TRANSFER");
             credit.setStatus("SUCCESS");
             transactionDAO.create(credit);
-
             processedRequestDAO.markProcessed(referenceId);
             conn.commit();
             System.out.println("[AccountService] Transfer of " + amount + " completed.");
@@ -122,13 +97,9 @@ public class AccountService {
         }
     }
 
-    // ── Transaction history ───────────────────────────────────────────────────
-
     public List<Transaction> getHistory(String accountId) throws SQLException {
         return transactionDAO.findByAccountId(accountId);
     }
-
-    // ── Idempotency guard ─────────────────────────────────────────────────────
 
     private void checkDuplicate(String referenceId) throws SQLException {
         if (processedRequestDAO.exists(referenceId)) {

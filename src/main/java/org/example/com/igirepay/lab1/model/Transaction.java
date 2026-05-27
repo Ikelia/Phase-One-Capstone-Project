@@ -3,22 +3,15 @@ package org.example.com.igirepay.lab1.model;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
-/**
- * Represents a single financial transaction.
- * Contains a unique referenceId used for idempotency checks.
- */
 public class Transaction {
 
     private String        transactionId;
-    /** Unique client-supplied reference – used to detect duplicates. */
     private String        referenceId;
     private String        accountId;
     private BigDecimal    amount;
-    private String        transactionType; // DEPOSIT | WITHDRAWAL | TRANSFER
+    private String        transactionType;
     private LocalDateTime timestamp;
-    private String        status;          // SUCCESS | FAILED | DUPLICATE
-
-    // ── Constructors ──────────────────────────────────────────────────────────
+    private String        status;
 
     public Transaction() {
         this.timestamp = LocalDateTime.now();
@@ -35,8 +28,6 @@ public class Transaction {
         this.timestamp       = LocalDateTime.now();
         this.status          = "PENDING";
     }
-
-    // ── Getters & Setters ─────────────────────────────────────────────────────
 
     public String        getTransactionId()   { return transactionId; }
     public void          setTransactionId(String transactionId) { this.transactionId = transactionId; }
@@ -58,8 +49,6 @@ public class Transaction {
 
     public String        getStatus()          { return status; }
     public void          setStatus(String status) { this.status = status; }
-
-    // ── toString ──────────────────────────────────────────────────────────────
 
     @Override
     public String toString() {

@@ -8,18 +8,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-/**
- * Data Access Object for the {@code customers} table.
- *
- * All queries use PreparedStatements to prevent SQL injection (Exercise 2.3).
- */
 public class CustomerDAO {
 
-    // ── CREATE ────────────────────────────────────────────────────────────────
-
     public void create(Customer customer) throws SQLException {
-        String sql = "INSERT INTO customers (id, full_name, email, phone_number, pin_hash) " +
-                     "VALUES (?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO customers (id, full_name, email, phone_number, pin_hash) VALUES (?, ?, ?, ?, ?)";
         try (PreparedStatement ps = DatabaseConnection.getConnection().prepareStatement(sql)) {
             ps.setString(1, customer.getCustomerId());
             ps.setString(2, customer.getFullName());
@@ -30,8 +22,6 @@ public class CustomerDAO {
             System.out.println("[CustomerDAO] Created customer: " + customer.getFullName());
         }
     }
-
-    // ── READ ──────────────────────────────────────────────────────────────────
 
     public Optional<Customer> findById(String id) throws SQLException {
         String sql = "SELECT id, full_name, email, phone_number, pin_hash FROM customers WHERE id = ?";
@@ -76,7 +66,6 @@ public class CustomerDAO {
         return list;
     }
 
-    /** Returns the total number of customers — used to seed the short ID counter. */
     public int countAll() throws SQLException {
         String sql = "SELECT COUNT(*) FROM customers";
         try (PreparedStatement ps = DatabaseConnection.getConnection().prepareStatement(sql);
@@ -85,8 +74,6 @@ public class CustomerDAO {
         }
         return 0;
     }
-
-    // ── UPDATE ────────────────────────────────────────────────────────────────
 
     public void update(Customer customer) throws SQLException {
         String sql = "UPDATE customers SET full_name = ?, email = ?, phone_number = ? WHERE id = ?";
@@ -109,8 +96,6 @@ public class CustomerDAO {
         }
     }
 
-    // ── DELETE ────────────────────────────────────────────────────────────────
-
     public void delete(String id) throws SQLException {
         String sql = "DELETE FROM customers WHERE id = ?";
         try (PreparedStatement ps = DatabaseConnection.getConnection().prepareStatement(sql)) {
@@ -119,8 +104,6 @@ public class CustomerDAO {
             System.out.println("[CustomerDAO] Deleted customer: " + id);
         }
     }
-
-    // ── Mapper ────────────────────────────────────────────────────────────────
 
     private Customer mapRow(ResultSet rs) throws SQLException {
         Customer c = new Customer(

@@ -4,21 +4,13 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-/**
- * Creates all required tables if they do not already exist.
- * Call SchemaInitializer.initialize() once at application startup.
- *
- * SQL schema matches Exercise 2.1 requirements.
- */
 public class SchemaInitializer {
 
-    private SchemaInitializer() { /* utility class */ }
+    private SchemaInitializer() {}
 
     public static void initialize() throws SQLException {
         Connection conn = DatabaseConnection.getConnection();
         try (Statement stmt = conn.createStatement()) {
-
-            // ── customers ─────────────────────────────────────────────────────
             stmt.execute(
                 "CREATE TABLE IF NOT EXISTS customers (" +
                 "  id           VARCHAR(36)  PRIMARY KEY," +
@@ -29,8 +21,6 @@ public class SchemaInitializer {
                 "  created_at   TIMESTAMP    DEFAULT CURRENT_TIMESTAMP" +
                 ")"
             );
-
-            // ── accounts ──────────────────────────────────────────────────────
             stmt.execute(
                 "CREATE TABLE IF NOT EXISTS accounts (" +
                 "  id           VARCHAR(36)    PRIMARY KEY," +
@@ -40,8 +30,6 @@ public class SchemaInitializer {
                 "  created_at   TIMESTAMP      DEFAULT CURRENT_TIMESTAMP" +
                 ")"
             );
-
-            // ── transactions ──────────────────────────────────────────────────
             stmt.execute(
                 "CREATE TABLE IF NOT EXISTS transactions (" +
                 "  id               VARCHAR(36)   PRIMARY KEY," +
@@ -53,8 +41,6 @@ public class SchemaInitializer {
                 "  created_at       TIMESTAMP     DEFAULT CURRENT_TIMESTAMP" +
                 ")"
             );
-
-            // ── processed_requests (idempotency table) ────────────────────────
             stmt.execute(
                 "CREATE TABLE IF NOT EXISTS processed_requests (" +
                 "  id           SERIAL       PRIMARY KEY," +
@@ -62,7 +48,6 @@ public class SchemaInitializer {
                 "  processed_at TIMESTAMP    DEFAULT CURRENT_TIMESTAMP" +
                 ")"
             );
-
             System.out.println("[Schema] All tables verified / created.");
         }
     }

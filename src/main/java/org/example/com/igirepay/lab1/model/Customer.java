@@ -3,21 +3,14 @@ package org.example.com.igirepay.lab1.model;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Represents an IgirePay customer.
- * Holds personal details and a list of associated accounts.
- */
 public class Customer {
 
     private String       customerId;
     private String       fullName;
     private String       email;
     private String       phoneNumber;
-    /** Hashed PIN – never store plain-text PINs. */
     private String       pinHash;
     private List<Account> accounts;
-
-    // ── Constructors ──────────────────────────────────────────────────────────
 
     public Customer() {
         this.accounts = new ArrayList<>();
@@ -31,8 +24,6 @@ public class Customer {
         this.accounts    = new ArrayList<>();
     }
 
-    // ── Account helpers ───────────────────────────────────────────────────────
-
     public void addAccount(Account account) {
         if (account != null) accounts.add(account);
     }
@@ -40,8 +31,6 @@ public class Customer {
     public void removeAccount(Account account) {
         accounts.remove(account);
     }
-
-    // ── Getters & Setters ─────────────────────────────────────────────────────
 
     public String       getCustomerId()  { return customerId; }
     public void         setCustomerId(String customerId) { this.customerId = customerId; }
@@ -60,8 +49,6 @@ public class Customer {
 
     public List<Account> getAccounts()  { return accounts; }
     public void          setAccounts(List<Account> accounts) { this.accounts = accounts; }
-
-    // ── toString ──────────────────────────────────────────────────────────────
 
     @Override
     public String toString() {

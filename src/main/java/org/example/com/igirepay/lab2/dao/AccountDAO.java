@@ -11,13 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-/**
- * Data Access Object for the {@code accounts} table.
- * Handles CRUD + balance update operations using PreparedStatements.
- */
 public class AccountDAO {
-
-    // ── CREATE ────────────────────────────────────────────────────────────────
 
     public void create(Account account) throws SQLException {
         String sql = "INSERT INTO accounts (id, customer_id, account_type, balance) VALUES (?, ?, ?, ?)";
@@ -30,8 +24,6 @@ public class AccountDAO {
             System.out.println("[AccountDAO] Created account: " + account.getAccountId());
         }
     }
-
-    // ── READ ──────────────────────────────────────────────────────────────────
 
     public Optional<Account> findById(String id) throws SQLException {
         String sql = "SELECT id, customer_id, account_type, balance FROM accounts WHERE id = ?";
@@ -66,7 +58,6 @@ public class AccountDAO {
         return list;
     }
 
-    /** Returns the total number of accounts — used to seed the short ID counter. */
     public int countAll() throws SQLException {
         String sql = "SELECT COUNT(*) FROM accounts";
         try (PreparedStatement ps = DatabaseConnection.getConnection().prepareStatement(sql);
@@ -75,8 +66,6 @@ public class AccountDAO {
         }
         return 0;
     }
-
-    // ── UPDATE ────────────────────────────────────────────────────────────────
 
     public void updateBalance(String accountId, BigDecimal newBalance) throws SQLException {
         String sql = "UPDATE accounts SET balance = ? WHERE id = ?";
@@ -87,8 +76,6 @@ public class AccountDAO {
         }
     }
 
-    // ── DELETE ────────────────────────────────────────────────────────────────
-
     public void delete(String id) throws SQLException {
         String sql = "DELETE FROM accounts WHERE id = ?";
         try (PreparedStatement ps = DatabaseConnection.getConnection().prepareStatement(sql)) {
@@ -98,17 +85,13 @@ public class AccountDAO {
         }
     }
 
-    // ── Mapper ────────────────────────────────────────────────────────────────
-
     private Account mapRow(ResultSet rs) throws SQLException {
         String type    = rs.getString("account_type");
         String id      = rs.getString("id");
         String custId  = rs.getString("customer_id");
         BigDecimal bal = rs.getBigDecimal("balance");
-
         if ("SAVINGS".equalsIgnoreCase(type)) {
-            return new SavingsAccount(id, custId, bal,
-                    new BigDecimal("0.02"), new BigDecimal("500.00"));
+            return new SavingsAccount(id, custId, bal, new BigDecimal("0.02"), new BigDecimal("500.00"));
         } else {
             return new WalletAccount(id, custId, bal, new BigDecimal("5000000.00"));
         }
