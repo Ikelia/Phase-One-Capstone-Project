@@ -9,38 +9,41 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
 
+// Service layer: coordinates DAOs for atomic, idempotent financial operations
+// ACID property: Atomicity implemented via JDBC setAutoCommit(false) / commit / rollback
 public class AccountService {
 
     private final AccountDAO          accountDAO          = new AccountDAO();
     private final TransactionDAO      transactionDAO      = new TransactionDAO();
     private final ProcessedRequestDAO processedRequestDAO = new ProcessedRequestDAO();
 
+    // Generates sequential TRN-001, TRN-002... IDs instead of long UUIDs
     private String nextTransactionId() throws SQLException {
         int count = transactionDAO.countAll();
         return String.format("TRN-%03d", count + 1);
     }
 
     public void deposit(String accountId, BigDecimal amount, String referenceId) throws SQLException {
-        checkDuplicate(referenceId);
+        checkDuplicate(referenceId); // idempotency check before any DB changes
         Connection conn = DatabaseConnection.getConnection();
-        conn.setAutoCommit(false);
+        conn.setAutoCommit(false); // start atomic transaction boundary
         try {
             Account account = accountDAO.findById(accountId)
                     .orElseThrow(() -> new IllegalArgumentException("Account not found: " + accountId));
 
-            account.deposit(amount);
+            account.deposit(amount); // polymorphism: correct deposit logic per account type
             accountDAO.updateBalance(accountId, account.getBalance());
 
             Transaction tx = new Transaction(nextTransactionId(), referenceId,
                     accountId, amount, "DEPOSIT");
             tx.setStatus("SUCCESS");
             transactionDAO.create(tx);
-            processedRequestDAO.markProcessed(referenceId);
+            processedRequestDAO.markProcessed(referenceId); // record reference ID
 
-            conn.commit();
+            conn.commit(); // all steps succeeded — make permanent (Durability)
             System.out.println("[AccountService] Deposit successful. New balance: " + account.getBalance());
         } catch (Exception e) {
-            conn.rollback();
+            conn.rollback(); // any failure — undo all changes (Atomicity)
             throw new SQLException("Deposit failed: " + e.getMessage(), e);
         } finally {
             conn.setAutoCommit(true);
@@ -55,7 +58,7 @@ public class AccountService {
             Account account = accountDAO.findById(accountId)
                     .orElseThrow(() -> new IllegalArgumentException("Account not found: " + accountId));
 
-            account.withdraw(amount);
+            account.withdraw(amount); // SavingsAccount applies fee, WalletAccount does not
             accountDAO.updateBalance(accountId, account.getBalance());
 
             Transaction tx = new Transaction(nextTransactionId(), referenceId,
@@ -91,6 +94,7 @@ public class AccountService {
             accountDAO.updateBalance(fromAccountId, from.getBalance());
             accountDAO.updateBalance(toAccountId,   to.getBalance());
 
+            // Two transaction records: one debit, one credit
             Transaction debit = new Transaction(nextTransactionId(),
                     referenceId + "-DEBIT", fromAccountId, amount, "TRANSFER");
             debit.setStatus("SUCCESS");
@@ -116,6 +120,7 @@ public class AccountService {
         return transactionDAO.findByAccountId(accountId);
     }
 
+    // Exercise 2.5: reject any transaction whose reference ID was already processed
     private void checkDuplicate(String referenceId) throws SQLException {
         if (processedRequestDAO.exists(referenceId)) {
             throw new IllegalStateException(
