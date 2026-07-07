@@ -3,17 +3,19 @@ package org.example.com.igirepay.lab1.model;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
+// Represents a single financial transaction — Exercise 1.1 requirement
 public class Transaction {
 
-    private String        transactionId;
-    private String        referenceId;
+    private String        transactionId;   // unique ID for this transaction record
+    private String        referenceId;     // client-supplied ID used for duplicate detection
     private String        accountId;
     private BigDecimal    amount;
-    private String        transactionType;
+    private String        transactionType; // DEPOSIT | WITHDRAWAL | TRANSFER
     private LocalDateTime timestamp;
-    private String        status;
+    private String        status;          // PENDING | SUCCESS | FAILED | DUPLICATE
 
     public Transaction() {
+        // Every new transaction starts as PENDING with the current time
         this.timestamp = LocalDateTime.now();
         this.status    = "PENDING";
     }
