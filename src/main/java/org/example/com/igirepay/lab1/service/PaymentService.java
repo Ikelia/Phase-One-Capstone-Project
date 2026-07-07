@@ -7,16 +7,22 @@ import org.example.com.igirepay.lab1.model.Transaction;
 import java.math.BigDecimal;
 import java.util.*;
 
+// In-memory service for Lab 1 — demonstrates List, Set, Map collections (Exercise 1.3)
 public class PaymentService {
 
+    // Map: fast O(1) customer lookup by customerId
     private final Map<String, Customer> customerMap = new HashMap<>();
 
+    // Map: fast O(1) account lookup by accountId
     private final Map<String, Account> accountMap = new HashMap<>();
 
+    // List: ordered transaction history
     private final List<Transaction> transactionHistory = new ArrayList<>();
 
+    // Set: stores unique reference IDs — core of idempotency/duplicate detection
     private final Set<String> processedReferenceIds = new HashSet<>();
 
+    // List: logs all failed and duplicate transactions
     private final List<Transaction> failedTransactionLog = new ArrayList<>();
 
     public void registerCustomer(Customer customer) {
@@ -49,6 +55,7 @@ public class PaymentService {
         return a;
     }
 
+    // Idempotency check: reject if reference ID was already processed
     public boolean processTransaction(Transaction transaction) {
         String refId = transaction.getReferenceId();
 
@@ -60,10 +67,11 @@ public class PaymentService {
         }
 
         try {
+            // Polymorphism: correct processTransaction version runs based on account type
             Account account = findAccount(transaction.getAccountId());
             account.processTransaction(transaction);
             transaction.setStatus("SUCCESS");
-            processedReferenceIds.add(refId);
+            processedReferenceIds.add(refId); // mark reference ID as used
             transactionHistory.add(transaction);
             System.out.println("[SUCCESS] Transaction " + refId + " processed.");
             return true;
