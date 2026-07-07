@@ -2,8 +2,10 @@ package org.example.com.igirepay.lab1.model;
 
 import java.math.BigDecimal;
 
+// WalletAccount — child class of Account, supports instant transfers with no fee
 public class WalletAccount extends Account {
 
+    // Maximum amount allowed per single transfer
     private BigDecimal transferLimit;
 
     public WalletAccount() {
@@ -13,10 +15,12 @@ public class WalletAccount extends Account {
     }
 
     public WalletAccount(String accountId, String customerId, BigDecimal balance, BigDecimal transferLimit) {
+        // super() calls the parent Account constructor — inheritance in action
         super(accountId, customerId, "WALLET", balance);
         this.transferLimit = transferLimit;
     }
 
+    // @Override — polymorphism: replaces Account's abstract deposit with wallet-specific logic
     @Override
     public void deposit(BigDecimal amount) {
         validatePositive(amount);
@@ -24,6 +28,7 @@ public class WalletAccount extends Account {
         System.out.println("[WalletAccount] Deposited " + amount + ". New balance: " + getBalance());
     }
 
+    // No fee applied — wallet allows instant withdrawal up to the transfer limit
     @Override
     public void withdraw(BigDecimal amount) {
         validatePositive(amount);
