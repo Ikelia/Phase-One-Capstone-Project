@@ -11,9 +11,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+// DAO for the accounts table — Exercise 2.4, all queries use PreparedStatements (Exercise 2.3)
 public class AccountDAO {
 
     public void create(Account account) throws SQLException {
+        // PreparedStatement with ? placeholders prevents SQL injection
         String sql = "INSERT INTO accounts (id, customer_id, account_type, balance) VALUES (?, ?, ?, ?)";
         try (PreparedStatement ps = DatabaseConnection.getConnection().prepareStatement(sql)) {
             ps.setString(1, account.getAccountId());
@@ -30,6 +32,7 @@ public class AccountDAO {
         try (PreparedStatement ps = DatabaseConnection.getConnection().prepareStatement(sql)) {
             ps.setString(1, id);
             try (ResultSet rs = ps.executeQuery()) {
+                // rs.next() moves to first row, returns false if no row found
                 if (rs.next()) return Optional.of(mapRow(rs));
             }
         }
@@ -58,6 +61,7 @@ public class AccountDAO {
         return list;
     }
 
+    // Used to generate sequential ACC-001, ACC-002... IDs
     public int countAll() throws SQLException {
         String sql = "SELECT COUNT(*) FROM accounts";
         try (PreparedStatement ps = DatabaseConnection.getConnection().prepareStatement(sql);
@@ -85,6 +89,7 @@ public class AccountDAO {
         }
     }
 
+    // mapRow converts a database row into the correct Java subclass — polymorphism meets JDBC
     private Account mapRow(ResultSet rs) throws SQLException {
         String type    = rs.getString("account_type");
         String id      = rs.getString("id");
