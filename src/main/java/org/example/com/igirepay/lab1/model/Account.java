@@ -3,12 +3,14 @@ package org.example.com.igirepay.lab1.model;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
+// Abstract base class — demonstrates abstraction and encapsulation (Exercise 1.1)
 public abstract class Account {
 
+    // Private fields — encapsulation: direct access is not allowed from outside
     private String accountId;
     private String customerId;
     private String accountType;
-    private BigDecimal balance;
+    private BigDecimal balance; // BigDecimal used for precise financial calculations
     private LocalDateTime createdAt;
 
     public Account() {
@@ -24,12 +26,14 @@ public abstract class Account {
         this.createdAt   = LocalDateTime.now();
     }
 
+    // Abstract methods — polymorphism hooks, each subclass provides its own implementation
     public abstract void deposit(BigDecimal amount);
 
     public abstract void withdraw(BigDecimal amount);
 
     public abstract void processTransaction(Transaction transaction);
 
+    // Shared validation helpers available to all subclasses
     protected void validatePositive(BigDecimal amount) {
         if (amount == null || amount.compareTo(BigDecimal.ZERO) <= 0) {
             throw new IllegalArgumentException("Amount must be positive, got: " + amount);
