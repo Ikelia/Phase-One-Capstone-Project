@@ -3,16 +3,18 @@ package org.example.com.igirepay.lab1.model;
 import java.util.ArrayList;
 import java.util.List;
 
+// Represents an IgirePay customer — Exercise 1.1
 public class Customer {
 
     private String       customerId;
     private String       fullName;
     private String       email;
     private String       phoneNumber;
-    private String       pinHash;
-    private List<Account> accounts;
+    private String       pinHash;    // PIN is never stored in plain text — only its SHA-256 hash
+    private List<Account> accounts; // List collection — a customer can own multiple accounts
 
     public Customer() {
+        // Initialize accounts list so it is never null
         this.accounts = new ArrayList<>();
     }
 
