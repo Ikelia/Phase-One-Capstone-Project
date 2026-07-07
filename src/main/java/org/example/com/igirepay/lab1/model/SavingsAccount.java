@@ -3,10 +3,13 @@ package org.example.com.igirepay.lab1.model;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
+// SavingsAccount — child class of Account, applies 2% fee and enforces minimum balance
 public class SavingsAccount extends Account {
 
+    // 2% fee applied on every withdrawal
     private BigDecimal withdrawalFeeRate;
 
+    // Account balance must never fall below this value after a withdrawal
     private BigDecimal minimumBalance;
 
     public SavingsAccount() {
@@ -32,10 +35,11 @@ public class SavingsAccount extends Account {
         System.out.println("[SavingsAccount] Deposited " + amount + ". New balance: " + getBalance());
     }
 
+    // Polymorphism: different withdrawal rules from WalletAccount — fee + minimum balance check
     @Override
     public void withdraw(BigDecimal amount) {
         validatePositive(amount);
-
+        // Calculate 2% fee using BigDecimal for precision
         BigDecimal fee   = amount.multiply(withdrawalFeeRate).setScale(2, RoundingMode.HALF_UP);
         BigDecimal total = amount.add(fee);
 
